@@ -1,0 +1,36 @@
+databases:
+  - name: chakra-db
+    plan: free
+    databaseName: chakra
+    user: chakra_user
+
+services:
+  - type: web
+    name: chakra-api
+    runtime: python
+    rootDir: Server
+    plan: hobby
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chakra-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+  - type: web
+    name: chakra-ui
+    runtime: static
+    rootDir: UI
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
