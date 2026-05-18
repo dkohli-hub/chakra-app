@@ -13,6 +13,7 @@ import KshetraViewTab from '../tabs/KshetraViewTab'
 import DataTab from '../tabs/DataTab'
 import ScoreTab from '../tabs/ScoreTab'
 import ProfileTab from '../tabs/ProfileTab'
+import SmartFetch from '../smartfetch/SmartFetch'
 
 export default function KarmaKshetra() {
   const [activeTab, setActiveTab] = useState('Gather')
@@ -46,7 +47,7 @@ export default function KarmaKshetra() {
         <div style={{ flex: 1 }}>
           <h1 style={{ color: '#C9A84C', margin: 0, fontFamily: 'serif', fontSize: '1.3rem', lineHeight: 1 }}>Karma Kshetra™</h1>
           <p style={{ color: '#6e7681', fontSize: '10px', margin: '2px 0 0', letterSpacing: '0.05em' }}>
-            Version 31 · Your mind, structured
+            Your mind, structured
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -62,6 +63,8 @@ export default function KarmaKshetra() {
         <TabNav active={activeTab} onChange={setActiveTab} />
         {renderTab()}
       </main>
+
+      <SmartFetch tasks={tasks} updateTask={taskProps.updateTask} deleteTask={taskProps.deleteTask} />
     </div>
   )
 }
