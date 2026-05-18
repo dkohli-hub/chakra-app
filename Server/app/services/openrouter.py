@@ -11,7 +11,7 @@ async def chat(messages: list, model: str = "google/gemma-4-26b-a4b-it:free") ->
                 "Authorization": f"Bearer {settings.openrouter_api_key}",
                 "Content-Type": "application/json",
                 "HTTP-Referer": "https://chakra.app",
-                "X-Title": "Chakra™",
+                "X-Title": "Chakra",
             },
             json={"model": model, "messages": messages},
             timeout=30.0,
