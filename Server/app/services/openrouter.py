@@ -3,7 +3,7 @@ import httpx
 from ..config import settings
 
 
-async def chat(messages: list, model: str = "anthropic/claude-haiku-4-5") -> str:
+async def chat(messages: list, model: str = "openai/gpt-oss-120b:free") -> str:
     async with httpx.AsyncClient() as client:
         response = await client.post(
             f"{settings.openrouter_base_url}/chat/completions",
