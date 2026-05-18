@@ -46,7 +46,7 @@ export default function KarmaKshetra() {
         <div style={{ flex: 1 }}>
           <h1 style={{ color: '#C9A84C', margin: 0, fontFamily: 'serif', fontSize: '1.3rem', lineHeight: 1 }}>Karma Kshetra™</h1>
           <p style={{ color: '#6e7681', fontSize: '10px', margin: '2px 0 0', letterSpacing: '0.05em' }}>
-            Version 31 · Your mind, structured
+            Your mind, structured
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
