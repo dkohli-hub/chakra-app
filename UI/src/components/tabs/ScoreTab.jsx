@@ -20,7 +20,7 @@ function KarmicArc({ pct }) {
   const endDeg = 180 + pct * 1.8
 
   return (
-    <svg viewBox="0 0 180 100" style={{ width: '100%', maxWidth: '260px', display: 'block', margin: '0 auto' }}>
+    <svg viewBox="0 0 180 115" style={{ width: '100%', maxWidth: '300px', display: 'block', margin: '0 auto', overflow: 'visible' }}>
       <path d={arcPath(180, 360)} fill="none" stroke="#21262D" strokeWidth="10" strokeLinecap="round" />
       {pct > 0 && (
         <path d={arcPath(180, Math.min(endDeg, 360))} fill="none" stroke={color} strokeWidth="10" strokeLinecap="round" />
