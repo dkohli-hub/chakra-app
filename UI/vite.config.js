@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
   preview: {
-    allowedHosts: 'all',
+    allowedHosts: ['chakra-app-ui.onrender.com'],
     host: '0.0.0.0',
   },
   server: mode === 'development' ? {
