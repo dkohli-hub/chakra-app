@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List
 
@@ -15,11 +15,14 @@ class Message(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: List[Message]
-    model: str = "anthropic/claude-haiku-4-5"
+    model: str = "meta-llama/llama-3.1-8b-instruct:free"
 
 
 @router.post("")
 async def llm_chat(data: ChatRequest, user_id: int = Depends(get_current_user)):
-    messages = [m.model_dump() for m in data.messages]
-    content = await chat(messages, data.model)
-    return {"content": content}
+    try:
+        messages = [m.model_dump() for m in data.messages]
+        content = await chat(messages, data.model)
+        return {"content": content}
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=str(e))

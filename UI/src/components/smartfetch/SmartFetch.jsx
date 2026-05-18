@@ -57,7 +57,8 @@ export default function SmartFetch({ tasks, updateTask, deleteTask }) {
       const parsed = JSON.parse(data.content)
       setResults(parsed)
     } catch (e) {
-      setError('Could not parse AI response. Try again.')
+      const msg = e?.response?.data?.detail || e?.message || 'Unknown error'
+      setError(`Error: ${msg}`)
     } finally {
       setLoading(false)
     }
