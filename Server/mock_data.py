@@ -98,22 +98,36 @@ TASKS = [
     dict(title="Get North Annuity login with Sonia",               bucket="Vishram",   weightage="W2", time_horizon="thisMonth", life_area="Personal/Family", ch=16, multitask=False, origin_bucket="Vishram",   entry_timestamp=ago(8)),
     dict(title="Send Sudhir about stocks and money",               bucket="Karya",     weightage="W1", time_horizon="nextWeek",  life_area="Personal/Family", ch=17, multitask=True,  origin_bucket="Karya",     entry_timestamp=ago(2)),
     dict(title="Prepare Aux Services P&L in Claude",               bucket="Karya",     weightage="W3", time_horizon="nextWeek",  life_area="Personal/Family", ch=11, multitask=None,  origin_bucket="Karya",     entry_timestamp=ago(3)),
+
+    # Tasks 80–98
+    dict(title="Prepare F-Bar for tax returns with Sonia",          bucket="Karya",     weightage="W3", time_horizon="thisMonth", life_area="Personal/Family", ch=17, multitask=None,  origin_bucket="Karya",     entry_timestamp=ago(4)),
+    dict(title="Decide which MacBook to keep — four weeks",         bucket="Manthan",   weightage="W2", time_horizon="thisMonth", life_area="Personal/Family", ch=16, multitask=False, origin_bucket="Manthan",   entry_timestamp=ago(5)),
+    dict(title="Send follow-up email to Discover",                  bucket="Karya",     weightage="W2", time_horizon="nextWeek",  life_area="Personal/Family", ch=17, multitask=True,  origin_bucket="Karya",     entry_timestamp=ago(1)),
+    dict(title="Activate HSA 2026 — ITC",                           bucket="Karya",     weightage="W3", time_horizon="thisMonth", life_area="Personal/Family", ch=17, multitask=None,  origin_bucket="Karya",     entry_timestamp=ago(3)),
+    dict(title="Consolidate all HSA accounts",                      bucket="Vishram",   weightage="W3", time_horizon="thisMonth", life_area="Personal/Family", ch=16, multitask=None,  origin_bucket="Vishram",   entry_timestamp=ago(6)),
+    dict(title="Decide HCL 401k merge with ITC 401k",               bucket="Manthan",   weightage="W3", time_horizon="Q3",        life_area="Work/Employment", ch=16, multitask=None,  origin_bucket="Manthan",   entry_timestamp=ago(8)),
+    dict(title="Deepankar appraisal — ITC next week",               bucket="Karya",     weightage="W2", time_horizon="nextWeek",  life_area="Work/Employment", ch=3,  multitask=False, origin_bucket="Karya",     entry_timestamp=ago(2)),
+    dict(title="Follow up Sanjeev Edward — GMR think tank",         bucket="Vishram",   weightage="W2", time_horizon="thisMonth", life_area="Personal/Family", ch=3,  multitask=False, origin_bucket="Vishram",   entry_timestamp=ago(9)),
+    dict(title="Send money with Sanjeev — May 17",                  bucket="Karya",     weightage="W2", time_horizon="thisWeek",  life_area="Personal/Family", ch=17, multitask=True,  origin_bucket="Karya",     entry_timestamp=ago(1)),
+    dict(title="Find ENT doctor for DK right ear",                  bucket="Karya",     weightage="W1", time_horizon="nextWeek",  life_area="Personal/Family", ch=6,  multitask=True,  origin_bucket="Karya",     entry_timestamp=ago(3)),
+    dict(title="Reschedule Dr. V Baylor Scott — this Monday",       bucket="Karya",     weightage="W1", time_horizon="thisWeek",  life_area="Personal/Family", ch=6,  multitask=True,  origin_bucket="Karya",     entry_timestamp=ago(1)),
+    dict(title="Order Dexcom for DK — next week",                   bucket="Karya",     weightage="W2", time_horizon="nextWeek",  life_area="Personal/Family", ch=6,  multitask=True,  origin_bucket="Karya",     entry_timestamp=ago(2)),
+    dict(title="Pending payment from Sameera — $500 May 23",        bucket="Dhairya",   weightage="W1", time_horizon="nextWeek",  life_area="Picturizze",      ch=17, multitask=False, origin_bucket="Dhairya",   entry_timestamp=ago(3)),
+    dict(title="Tell Priyanka — check Katie shoot inspiration pics", bucket="Karya",     weightage="W1", time_horizon="nextWeek",  life_area="Picturizze",      ch=3,  multitask=False, origin_bucket="Karya",     entry_timestamp=ago(1)),
+    dict(title="Confirm Pugs Rescue Austin dates for July",         bucket="Karya",     weightage="W1", time_horizon="thisMonth", life_area="Picturizze",      ch=3,  multitask=True,  origin_bucket="Karya",     entry_timestamp=ago(4)),
+    dict(title="Start monthly cloud P&L with auto alarms — June 1", bucket="Karya",     weightage="W4", time_horizon="nextWeek",  life_area="Personal/Family", ch=11, multitask=None,  origin_bucket="Karya",     entry_timestamp=ago(3)),
+    dict(title="Find Lakme Fashion Week dates — align India trip",  bucket="Vishram",   weightage="W1", time_horizon="thisMonth", life_area="Picturizze",      ch=11, multitask=True,  origin_bucket="Vishram",   entry_timestamp=ago(7)),
+    dict(title="Plan Tirth (puja) in India — next year trip",       bucket="Manan",     weightage="W2", time_horizon="thisMonth", life_area="Picturizze",      ch=7,  multitask=False, origin_bucket="Manan",     entry_timestamp=ago(8)),
+    dict(title="Book India tickets — by June end",                  bucket="Vishram",   weightage="W3", time_horizon="thisMonth", life_area="Picturizze",      ch=11, multitask=None,  origin_bucket="Vishram",   entry_timestamp=ago(6)),
 ]
 
-# Remove existing tasks for dk to avoid duplicates
-existing = db.query(Task).filter(Task.user_id == dk.id).count()
-if existing > 0:
-    confirm = input(f"  {existing} tasks already exist for dk. Replace them? (y/n): ").strip().lower()
-    if confirm == 'y':
-        db.query(Task).filter(Task.user_id == dk.id).delete()
-        db.commit()
-        print("  Cleared existing tasks.")
-    else:
-        print("  Aborted.")
-        db.close()
-        sys.exit(0)
+# Get existing titles to avoid duplicates
+existing_titles = {t.title for t in db.query(Task.title).filter(Task.user_id == dk.id).all()}
 
-for t in TASKS:
+new_tasks = [t for t in TASKS if t["title"] not in existing_titles]
+skipped = len(TASKS) - len(new_tasks)
+
+for t in new_tasks:
     completed = t.pop("completed", False)
     entry_ts = t.pop("entry_timestamp", datetime.utcnow())
     state_history = [{"bucket": t["origin_bucket"], "timestamp": entry_ts.isoformat()}]
@@ -129,5 +143,5 @@ for t in TASKS:
 
 db.commit()
 db.close()
-print(f"  Inserted {len(TASKS)} tasks for dk.")
+print(f"  Inserted {len(new_tasks)} new tasks. Skipped {skipped} duplicates.")
 print("Done.")
