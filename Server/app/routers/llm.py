@@ -15,7 +15,7 @@ class Message(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: List[Message]
-    model: str = "meta-llama/llama-3.1-8b-instruct:free"  # confirmed free on OpenRouter
+    model: str = "deepseek/deepseek-v4-flash:free"
 
 
 @router.post("")
