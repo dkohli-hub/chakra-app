@@ -3,7 +3,7 @@ import httpx
 from ..config import settings
 
 
-async def chat(messages: list, model: str = "meta-llama/llama-3.1-8b-instruct:free") -> str:
+async def chat(messages: list, model: str = "deepseek/deepseek-v4-flash:free") -> str:
     async with httpx.AsyncClient() as client:
         response = await client.post(
             f"{settings.openrouter_base_url}/chat/completions",
