@@ -15,7 +15,7 @@ class Message(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: List[Message]
-    model: str = "deepseek/deepseek-v4-flash:free"
+    model: str = "google/gemini-3.1-flash-lite-preview"
 
 
 @router.post("")
