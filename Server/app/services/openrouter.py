@@ -13,7 +13,7 @@ async def chat(messages: list, model: str = "google/gemini-3.1-flash-lite-previe
                 "HTTP-Referer": "https://chakra.app",
                 "X-Title": "Chakra",
             },
-            json={"model": model, "messages": messages},
+            json={"model": model, "messages": messages, "max_tokens": 512},
             timeout=30.0,
         )
         response.raise_for_status()
