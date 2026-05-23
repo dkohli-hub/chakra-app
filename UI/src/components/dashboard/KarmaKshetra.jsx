@@ -111,11 +111,11 @@ export default function KarmaKshetra() {
             </span>
           )}
 
-          <button onClick={handleExportOpen} style={headerBtn('#1A3A5A')}>↗ Export</button>
+          <button onClick={handleExportOpen} style={headerBtn('export')}>↗ Export</button>
           {done > 0 && (
-            <button onClick={handleClearCompleted} style={headerBtn('#2A1010')}>✕ Clear done</button>
+            <button onClick={handleClearCompleted} style={headerBtn('clear')}>✕ Clear done</button>
           )}
-          <button onClick={logout} style={headerBtn('#21262D')}>Logout</button>
+          <button onClick={logout} style={headerBtn('logout')}>Logout</button>
         </div>
       </header>
 
@@ -172,8 +172,13 @@ function statPill(bg, color) {
   return { background: bg, color, fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 600 }
 }
 
-function headerBtn(bg) {
-  return { background: bg, border: '1px solid #30363d', color: '#e6edf3', padding: '3px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', whiteSpace: 'nowrap' }
+const BTN_VARIANTS = {
+  export:  { background: '#1A6B5A', border: '1px solid #00BFA5', color: '#fff' },
+  clear:   { background: 'transparent', border: '1px solid #E07A5F', color: '#E07A5F' },
+  logout:  { background: 'transparent', border: '1px solid #30363d', color: '#8b949e' },
+}
+function headerBtn(variant) {
+  return { ...BTN_VARIANTS[variant], padding: '4px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }
 }
 
 const modalOverlay = {
