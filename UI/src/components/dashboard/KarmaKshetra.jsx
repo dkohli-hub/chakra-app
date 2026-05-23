@@ -91,6 +91,19 @@ export default function KarmaKshetra() {
     resetBackupCounter()
   }
 
+  function downloadJSON() {
+    const json = exportAsJSON()
+    const blob = new Blob([json], { type: 'application/json' })
+    const url  = URL.createObjectURL(blob)
+    const a    = document.createElement('a')
+    a.href     = url
+    a.download = `karma-kshetra-backup-${new Date().toISOString().slice(0,10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    setCopyMsg('JSON file downloaded!')
+    setTimeout(() => setCopyMsg(''), 2000)
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#0D1117', color: '#e6edf3', fontFamily: 'system-ui, sans-serif' }}>
       <header style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid #C9A84C', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -123,23 +136,44 @@ export default function KarmaKshetra() {
       {showExport && (
         <div style={modalOverlay} onClick={() => setShowExport(false)}>
           <div style={modalBox} onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <div style={{ color: '#C9A84C', fontWeight: 700, fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Export / Backup</div>
-              <button onClick={() => setShowExport(false)} style={{ background: 'none', border: 'none', color: '#6e7681', cursor: 'pointer', fontSize: '18px', lineHeight: 1 }}>×</button>
+
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+              <div>
+                <div style={{ color: '#C9A84C', fontWeight: 700, fontSize: '14px', letterSpacing: '0.06em' }}>Export / Backup</div>
+                <div style={{ color: '#6e7681', fontSize: '10px', marginTop: '2px' }}>{tasks.filter(t=>!t.completed).length} active tasks · {new Date().toLocaleDateString()}</div>
+              </div>
+              <button onClick={() => setShowExport(false)} style={{ background: 'none', border: 'none', color: '#6e7681', cursor: 'pointer', fontSize: '20px', lineHeight: 1, padding: '0 4px' }}>×</button>
             </div>
 
+            {/* Success toast */}
             {copyMsg && (
-              <div style={{ background: '#1A3A2A', border: '1px solid #1A6B5A', borderRadius: '4px', padding: '4px 8px', fontSize: '11px', color: '#6BCB77', marginBottom: '8px' }}>
-                {copyMsg}
+              <div style={{ background: '#0F2A1A', border: '1px solid #1A6B5A', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', color: '#6BCB77', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                ✓ {copyMsg}
               </div>
             )}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <ExportRow label="📋 Plain text" desc="Readable list for Notes / Docs" onCopy={() => copyToClipboard(exportAsText(), 'Plain text')} />
-              <ExportRow label="💬 WhatsApp" desc="Bold formatted for messaging" onCopy={() => copyToClipboard(exportAsWhatsApp(), 'WhatsApp text')} />
-              <ExportRow label="✉ Email" desc="Send to dh.kohli@gmail.com" onCopy={handleEmailExport} copyLabel="Open mail" />
-              <ExportRow label="{ } Raw JSON" desc="Full backup — use for Import/Sync" onCopy={() => copyToClipboard(exportAsJSON(), 'JSON')} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <ExportRow icon="📋" label="Plain text" desc="Readable list — paste into Notes or Docs" btnLabel="Copy" onAction={() => copyToClipboard(exportAsText(), 'Plain text')} />
+              <ExportRow icon="💬" label="WhatsApp" desc="Bold formatted, ready to share" btnLabel="Copy" onAction={() => copyToClipboard(exportAsWhatsApp(), 'WhatsApp text')} />
+              <ExportRow icon="✉" label="Email" desc="Opens mail to dh.kohli@gmail.com" btnLabel="Open" onAction={handleEmailExport} />
+
+              {/* JSON row — two buttons */}
+              <div style={exportRowStyle}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={iconBox}>{ }</span>
+                  <div>
+                    <div style={{ color: '#e6edf3', fontSize: '12px', fontWeight: 600 }}>Raw JSON</div>
+                    <div style={{ color: '#6e7681', fontSize: '10px' }}>Full backup — use for Import / Sync</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                  <button onClick={() => copyToClipboard(exportAsJSON(), 'JSON')} style={exportBtnSecondary}>Copy</button>
+                  <button onClick={downloadJSON} style={exportBtnPrimary}>⬇ Download</button>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
       )}
@@ -154,19 +188,25 @@ export default function KarmaKshetra() {
   )
 }
 
-function ExportRow({ label, desc, onCopy, copyLabel = 'Copy' }) {
+function ExportRow({ icon, label, desc, btnLabel, onAction }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0D1117', borderRadius: '6px', padding: '8px 10px' }}>
-      <div>
-        <div style={{ color: '#e6edf3', fontSize: '12px', fontWeight: 600 }}>{label}</div>
-        <div style={{ color: '#6e7681', fontSize: '10px' }}>{desc}</div>
+    <div style={exportRowStyle}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <span style={iconBox}>{icon}</span>
+        <div>
+          <div style={{ color: '#e6edf3', fontSize: '12px', fontWeight: 600 }}>{label}</div>
+          <div style={{ color: '#6e7681', fontSize: '10px' }}>{desc}</div>
+        </div>
       </div>
-      <button onClick={onCopy} style={{ background: '#1A6B5A', border: 'none', color: '#fff', borderRadius: '4px', padding: '4px 10px', cursor: 'pointer', fontSize: '11px', fontWeight: 600, whiteSpace: 'nowrap' }}>
-        {copyLabel}
-      </button>
+      <button onClick={onAction} style={exportBtnPrimary}>{btnLabel}</button>
     </div>
   )
 }
+
+const exportRowStyle    = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0D1117', border: '1px solid #21262D', borderRadius: '8px', padding: '10px 12px', gap: '8px' }
+const iconBox           = { fontSize: '16px', width: '28px', textAlign: 'center', flexShrink: 0 }
+const exportBtnPrimary  = { background: '#1A6B5A', border: '1px solid #00BFA5', color: '#fff', borderRadius: '5px', padding: '5px 12px', cursor: 'pointer', fontSize: '11px', fontWeight: 700, whiteSpace: 'nowrap' }
+const exportBtnSecondary = { background: 'transparent', border: '1px solid #30363d', color: '#8b949e', borderRadius: '5px', padding: '5px 10px', cursor: 'pointer', fontSize: '11px', fontWeight: 600, whiteSpace: 'nowrap' }
 
 function statPill(bg, color) {
   return { background: bg, color, fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 600 }
@@ -188,5 +228,5 @@ const modalOverlay = {
 
 const modalBox = {
   background: '#161B22', border: '1px solid #C9A84C40', borderRadius: '12px',
-  padding: '1.25rem', width: '100%', maxWidth: '380px',
+  padding: '1.25rem', width: '100%', maxWidth: '440px',
 }
