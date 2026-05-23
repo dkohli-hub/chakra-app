@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { authAPI } from '../services/api'
 
-export function useAuth() {
+const AuthContext = createContext(null)
+
+export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('token'))
 
   async function login(username, password) {
@@ -15,5 +17,13 @@ export function useAuth() {
     setToken(null)
   }
 
-  return { token, login, logout }
+  return (
+    <AuthContext.Provider value={{ token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+export function useAuth() {
+  return useContext(AuthContext)
 }
