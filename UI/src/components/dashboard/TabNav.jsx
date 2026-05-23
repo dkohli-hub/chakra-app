@@ -1,4 +1,4 @@
-const TABS = ['Gather', 'Time', 'Karma', 'Gita', 'Soul', 'Soul Says', 'Brain Twin', 'Kshetra', 'Data', 'Score', 'Profile']
+const TABS = ['Battery', 'Gather', 'Time', 'Karma', 'Gita', 'Soul', 'Soul Says', 'Brain Twin', 'Kshetra', 'Data', 'Score', 'Profile']
 
 export default function TabNav({ active, onChange }) {
   return (

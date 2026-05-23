@@ -119,6 +119,15 @@ TASKS = [
     dict(title="Find Lakme Fashion Week dates — align India trip",  bucket="Vishram",   weightage="W1", time_horizon="thisMonth", life_area="Picturizze",      ch=11, multitask=True,  origin_bucket="Vishram",   entry_timestamp=ago(7)),
     dict(title="Plan Tirth (puja) in India — next year trip",       bucket="Manan",     weightage="W2", time_horizon="thisMonth", life_area="Picturizze",      ch=7,  multitask=False, origin_bucket="Manan",     entry_timestamp=ago(8)),
     dict(title="Book India tickets — by June end",                  bucket="Vishram",   weightage="W3", time_horizon="thisMonth", life_area="Picturizze",      ch=11, multitask=None,  origin_bucket="Vishram",   entry_timestamp=ago(6)),
+
+    # Tasks 99–120 (from V36)
+    dict(title="ITC Office Tasks — shadow domain (Outlook)",                                                 bucket="Vishram", weightage="W1", time_horizon="nextWeek",  life_area="Work/Employment", ch=3,  multitask=False, origin_bucket="Vishram", entry_timestamp=ago(10)),
+    dict(title="How do we map relationships on the Sajik Tam Singh graph?",                                  bucket="Vishram", weightage="W1", time_horizon="thisMonth", life_area="Work/Employment", ch=12, multitask=False, origin_bucket="Vishram", entry_timestamp=ago(5)),
+    dict(title="Call Purveys Bhai on Sunday morning — not available today",                                  bucket="Karya",   weightage="W1", time_horizon="thisWeek",  life_area="Personal/Family", ch=3,  multitask=True,  origin_bucket="Karya",   entry_timestamp=ago(0)),
+    dict(title="Set up time with Parvez bhai — around July 11 (KT trip)",                                   bucket="Karya",   weightage="W1", time_horizon="thisMonth", life_area="Personal/Family", ch=3,  multitask=True,  origin_bucket="Karya",   entry_timestamp=ago(0)),
+    dict(title="Text Dennis — swap car this Sunday in Dallas. Send contract number + expiration date.",      bucket="Karya",   weightage="W1", time_horizon="today",     life_area="Personal/Family", ch=3,  multitask=True,  origin_bucket="Karya",   entry_timestamp=ago(0)),
+    dict(title="Upload current medications from iKAVACH into Saarthi project — tonight (10 min focused)",   bucket="Karya",   weightage="W1", time_horizon="today",     life_area="Personal/Family", ch=6,  multitask=False, origin_bucket="Karya",   entry_timestamp=ago(0)),
+    dict(title="1st of every month: generate RIDs + update Saarthi Soul Document (30 min focused, recurring)", bucket="Karya", weightage="W2", time_horizon="thisMonth", life_area="Personal/Family", ch=3, multitask=False, origin_bucket="Karya",  entry_timestamp=ago(0)),
 ]
 
 # Get existing titles to avoid duplicates

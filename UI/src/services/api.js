@@ -16,14 +16,16 @@ export const authAPI = {
 }
 
 export const tasksAPI = {
-  getAll: () => api.get('/api/tasks'),
-  create: (data) => api.post('/api/tasks', data),
-  update: (id, data) => api.patch(`/api/tasks/${id}`, data),
-  delete: (id) => api.delete(`/api/tasks/${id}`),
+  getAll:          () => api.get('/api/tasks'),
+  create:          (data) => api.post('/api/tasks', data),
+  update:          (id, data) => api.patch(`/api/tasks/${id}`, data),
+  delete:          (id) => api.delete(`/api/tasks/${id}`),
+  deleteCompleted: () => api.delete('/api/tasks/completed'),
 }
 
 export const llmAPI = {
-  chat: (messages, model) => api.post('/api/llm', { messages, model }),
+  chat:       (messages, model) => api.post('/api/llm', { messages, model }),
+  chatVision: (messages, image_base64) => api.post('/api/llm', { messages, image_base64 }),
 }
 
 export default api

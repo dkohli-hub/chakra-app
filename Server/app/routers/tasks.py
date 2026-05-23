@@ -30,6 +30,15 @@ def create_task(data: TaskCreate, db: Session = Depends(get_db), user_id: int = 
     return task
 
 
+@router.delete("/completed")
+def delete_completed_tasks(db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
+    q = db.query(Task).filter(Task.user_id == user_id, Task.completed == True)
+    count = q.count()
+    q.delete(synchronize_session=False)
+    db.commit()
+    return {"deleted": count}
+
+
 @router.patch("/{task_id}", response_model=TaskOut)
 def update_task(task_id: int, data: TaskUpdate, db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
     task = db.query(Task).filter(Task.id == task_id, Task.user_id == user_id).first()

@@ -6,7 +6,7 @@ const W_LABELS = { W1: '5–10m', W2: '20–30m', W3: '1hr', W4: 'Half day', W5:
 export default function TaskCard({ task, onUpdate, onDelete }) {
   const [checking, setChecking] = useState(false)
   const [removing, setRemoving] = useState(false)
-  const band = getBand(task.time_horizon)
+  const band = getBand(task.time_horizon, task.entry_timestamp)
   const bandStyle = band ? BAND_STYLES[band] : null
   const isOverdue = band === 'overdue'
 
@@ -30,7 +30,7 @@ export default function TaskCard({ task, onUpdate, onDelete }) {
         background: '#161B22',
         border: '1px solid #21262D',
         marginBottom: '0.4rem',
-        ...bandBorderStyle(task.time_horizon),
+        ...bandBorderStyle(task.time_horizon, task.entry_timestamp),
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>

@@ -30,9 +30,9 @@ export const LIFE_AREA_COLORS = {
   'Other':             '#A8A8C8',
 }
 
-export function getBand(timeFrame) {
+export function getBand(timeFrame, entryTimestamp = null) {
   if (!timeFrame || timeFrame === 'parkingLot') return null
-  if (isOverdue(timeFrame)) return 'overdue'
+  if (isOverdue(timeFrame, entryTimestamp)) return 'overdue'
   const score = timeScore(timeFrame)
   if (score > 400) return 'blue'
   if (score > 200) return 'green'
@@ -50,8 +50,8 @@ export const BAND_STYLES = {
   overdue: { color: '#B71C1C', bg: '#FFCDD2', label: 'OVERDUE',      border: '' },
 }
 
-export function bandBorderStyle(timeFrame) {
-  const band = getBand(timeFrame)
+export function bandBorderStyle(timeFrame, entryTimestamp = null) {
+  const band = getBand(timeFrame, entryTimestamp)
   if (!band) return {}
   const s = BAND_STYLES[band]
   return s.border

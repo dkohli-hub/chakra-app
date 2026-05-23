@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 from ..dependencies import get_current_user
-from ..services.openrouter import chat
+from ..services.openrouter import chat, chat_vision
 
 router = APIRouter(prefix="/api/llm", tags=["llm"])
 
@@ -16,13 +16,22 @@ class Message(BaseModel):
 class ChatRequest(BaseModel):
     messages: List[Message]
     model: str = "google/gemini-3.1-flash-lite-preview"
+    image_base64: Optional[str] = None
 
 
 @router.post("")
 async def llm_chat(data: ChatRequest, user_id: int = Depends(get_current_user)):
     try:
-        messages = [m.model_dump() for m in data.messages]
-        content = await chat(messages, data.model)
+        if data.image_base64:
+            prompt = data.messages[-1].content if data.messages else (
+                "Extract all action tasks from this image. "
+                "Return ONLY a plain numbered list of clear task titles, one per line. "
+                "No categories, no explanations."
+            )
+            content = await chat_vision(prompt, data.image_base64)
+        else:
+            messages = [m.model_dump() for m in data.messages]
+            content = await chat(messages, data.model)
         return {"content": content}
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e))
