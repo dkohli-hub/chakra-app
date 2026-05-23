@@ -62,7 +62,7 @@ export function timeScore(timeFrame) {
   return ((daysUntil - bufferDays) / bufferDays) * 100
 }
 
-// Entry-date-aware overdue: 'today' tasks entered on a previous calendar day are overdue
+// Overdue = deadline has actually passed, OR 'today' task entered on a previous calendar day
 export function isOverdue(timeFrame, entryTimestamp = null) {
   if (!timeFrame || timeFrame === 'parkingLot') return false
   if (timeFrame === 'today' && entryTimestamp) {
@@ -72,5 +72,5 @@ export function isOverdue(timeFrame, entryTimestamp = null) {
     const entryMidnight = new Date(entry.getFullYear(), entry.getMonth(), entry.getDate())
     if (entryMidnight < todayMidnight) return true
   }
-  return timeScore(timeFrame) <= 0
+  return deadlineFromTimeFrame(timeFrame) < new Date()
 }
