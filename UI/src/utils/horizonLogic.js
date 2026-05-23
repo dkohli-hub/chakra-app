@@ -62,15 +62,41 @@ export function timeScore(timeFrame) {
   return ((daysUntil - bufferDays) / bufferDays) * 100
 }
 
-// Overdue = deadline has actually passed, OR 'today' task entered on a previous calendar day
+// Overdue = the window that was intended at entry time has passed.
+// All relative horizons are evaluated against when the task was ENTERED, not today.
 export function isOverdue(timeFrame, entryTimestamp = null) {
   if (!timeFrame || timeFrame === 'parkingLot') return false
-  if (timeFrame === 'today' && entryTimestamp) {
-    const now = new Date()
+
+  const now = new Date()
+
+  if (entryTimestamp) {
     const entry = new Date(entryTimestamp)
+    const eY = entry.getFullYear(), eM = entry.getMonth(), eD = entry.getDate()
+    const entryMidnight = new Date(eY, eM, eD)
     const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    const entryMidnight = new Date(entry.getFullYear(), entry.getMonth(), entry.getDate())
-    if (entryMidnight < todayMidnight) return true
+
+    if (timeFrame === 'today') {
+      // Overdue if entered on any previous calendar day
+      if (entryMidnight < todayMidnight) return true
+    } else if (timeFrame === 'thisWeek') {
+      // The "this week" that contained entry ends on the Sunday of that week
+      const entryWeekSunday = new Date(eY, eM, eD + (7 - entry.getDay()))
+      if (entryWeekSunday < now) return true
+    } else if (timeFrame === 'nextWeek') {
+      // "Next week" from entry = the week after entry's week; ends on Sunday + 7
+      const entryNextWeekSunday = new Date(eY, eM, eD + (7 - entry.getDay()) + 7)
+      if (entryNextWeekSunday < now) return true
+    } else if (timeFrame === 'thisMonth') {
+      // End of entry's calendar month
+      const entryMonthEnd = new Date(eY, eM + 1, 0)
+      if (entryMonthEnd < now) return true
+    } else if (timeFrame === 'nextMonth') {
+      // End of the month after entry's month
+      const entryNextMonthEnd = new Date(eY, eM + 2, 0)
+      if (entryNextMonthEnd < now) return true
+    }
   }
-  return deadlineFromTimeFrame(timeFrame) < new Date()
+
+  // Absolute horizons (Q3, Q4, thisYear, 1year): deadline has passed
+  return deadlineFromTimeFrame(timeFrame) < now
 }
