@@ -107,11 +107,14 @@ export default function KarmaKshetra() {
   return (
     <div style={{ minHeight: '100vh', background: '#0D1117', color: '#e6edf3', fontFamily: 'system-ui, sans-serif' }}>
       <header style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid #C9A84C', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-        <div style={{ flex: 1 }}>
-          <h1 style={{ color: '#C9A84C', margin: 0, fontFamily: 'serif', fontSize: '1.3rem', lineHeight: 1 }}>Karma Kshetra™</h1>
-          <p style={{ color: '#6e7681', fontSize: '10px', margin: '2px 0 0', letterSpacing: '0.05em' }}>
-            ⟳ synced · {tasks.length} tasks
-          </p>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img src="/logo.png" alt="Chakra" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+          <div>
+            <h1 style={{ color: '#C9A84C', margin: 0, fontFamily: 'serif', fontSize: '1.3rem', lineHeight: 1 }}>Karma Kshetra™</h1>
+            <p style={{ color: '#6e7681', fontSize: '10px', margin: '2px 0 0', letterSpacing: '0.05em' }}>
+              ⟳ synced · {tasks.length} tasks
+            </p>
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
