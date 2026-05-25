@@ -46,15 +46,30 @@ export default function LoginPage() {
           />
         </div>
 
-        {/* Tagline */}
+        {/* Tagline — character-by-character slide in from left */}
         <div style={styles.tagline}>
-          <p style={styles.tagSub}>Karma Kshetra™ — The Field of Action</p>
+          <p style={styles.tagSub}>
+            {'Karma Kshetra™ — The Field of Action'.split('').map((ch, i) => (
+              <span
+                key={i}
+                style={{
+                  display: 'inline-block',
+                  opacity: 0,
+                  animation: 'charSlideIn 0.4s ease forwards',
+                  animationDelay: `${i * 0.035}s`,
+                  whiteSpace: ch === ' ' ? 'pre' : 'normal',
+                }}
+              >
+                {ch}
+              </span>
+            ))}
+          </p>
         </div>
 
         {/* Divider */}
         <div style={styles.divider}>
           <div style={styles.dividerLine} />
-          <span style={styles.dividerText}>ॐ</span>
+          <span style={styles.dividerText} className="om-spin">ॐ</span>
           <div style={styles.dividerLine} />
         </div>
 
