@@ -237,6 +237,7 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
     <div>
       {/* ── Gather form ───────────────────────────────────── */}
       <form onSubmit={handleAdd} style={formStyle}>
+        {/* Textarea + mic row */}
         <div style={{ position: 'relative' }}>
           <textarea
             id="gatherTextarea"
@@ -245,29 +246,37 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
             placeholder="What is on your mind? One task per line — or paste AI-extracted tasks here"
             rows={imgBase64 ? 3 : 2}
             required
-            style={{ ...textareaStyle, paddingRight: '42px' }}
+            style={{ ...textareaStyle, paddingRight: '48px' }}
           />
-          <button
-            type="button"
-            onClick={toggleVoice}
-            title={listening ? 'Stop listening' : 'Speak to add task'}
-            style={{
-              position: 'absolute', top: '8px', right: '8px',
-              width: '28px', height: '28px', borderRadius: '50%',
-              background: listening ? T.red : T.tealBg,
-              border: `1.5px solid ${listening ? T.red : T.teal}`,
-              color: listening ? '#fff' : T.teal,
-              cursor: 'pointer', fontSize: '14px', lineHeight: 1,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: listening ? `0 0 0 4px ${T.red}30` : 'none',
-              transition: 'all 0.2s',
-            }}
-          >
-            {listening ? '⏹' : '🎙'}
-          </button>
+          <MicButton listening={listening} onClick={toggleVoice} style={{ position: 'absolute', top: '8px', right: '8px' }} />
         </div>
-        {voiceError && <div style={{ color: T.red, fontSize: '11px', marginTop: '4px' }}>{voiceError}</div>}
-        {listening && <div style={{ color: T.teal, fontSize: '11px', marginTop: '4px', fontStyle: 'italic' }}>🎙 Listening… speak your task</div>}
+
+        {/* Voice status bar */}
+        {(listening || voiceError) && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '8px',
+            marginTop: '6px', padding: '7px 10px', borderRadius: '8px',
+            background: voiceError ? T.redBg : T.tealBg,
+            border: `1px solid ${voiceError ? T.red : T.teal}30`,
+          }}>
+            {listening && <span style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
+              {[0,1,2].map(i => (
+                <span key={i} style={{
+                  display: 'inline-block', width: '3px', borderRadius: '2px',
+                  background: T.teal, animation: `micBar 0.8s ease-in-out ${i * 0.15}s infinite alternate`,
+                  height: i === 1 ? '14px' : '8px',
+                }} />
+              ))}
+            </span>}
+            <span style={{ fontSize: '11px', color: voiceError ? T.red : T.teal, fontWeight: 500 }}>
+              {voiceError || 'Listening… speak your task clearly'}
+            </span>
+            {listening && <span style={{ marginLeft: 'auto', fontSize: '10px', color: T.textMuted }}>tap ⏹ to stop</span>}
+          </div>
+        )}
+
+        {/* Voice user guide */}
+        <VoiceGuide />
 
         {/* Image upload section */}
         <div style={imgSectionStyle}>
@@ -519,6 +528,78 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
         tasks.filter(t => !t.completed).slice(0, 20).map(t => (
           <TaskCard key={t.id} task={t} onUpdate={updateTask} onDelete={deleteTask} />
         ))
+      )}
+    </div>
+  )
+}
+
+// ── Shared mic button ─────────────────────────────────────────────────────────
+export function MicButton({ listening, onClick, style = {} }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={listening ? 'Stop listening' : 'Speak your task'}
+      className={listening ? 'mic-pulse' : ''}
+      style={{
+        width: '36px', height: '36px', borderRadius: '50%', border: 'none',
+        background: listening ? T.red : T.teal,
+        color: '#fff', cursor: 'pointer', fontSize: '16px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0, transition: 'background 0.2s',
+        ...style,
+      }}
+    >
+      {listening
+        ? <span style={{ display: 'flex', gap: '2px', alignItems: 'flex-end', height: '16px' }}>
+            {[4,10,7].map((h, i) => (
+              <span key={i} style={{
+                width: '3px', borderRadius: '2px', background: '#fff',
+                height: `${h}px`,
+                animation: `micBar 0.6s ease-in-out ${i * 0.15}s infinite alternate`,
+              }} />
+            ))}
+          </span>
+        : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="22"/>
+            <line x1="8"  y1="22" x2="16" y2="22"/>
+          </svg>
+      }
+    </button>
+  )
+}
+
+// ── Voice user guide ──────────────────────────────────────────────────────────
+export function VoiceGuide() {
+  const [open, setOpen] = useState(false)
+  return (
+    <div style={{ marginTop: '8px' }}>
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        style={{ background: 'none', border: 'none', color: T.textMuted, fontSize: '10px', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
+      >
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        How to use voice input {open ? '▴' : '▾'}
+      </button>
+      {open && (
+        <div style={{
+          marginTop: '8px', padding: '10px 12px', borderRadius: '10px',
+          background: T.surface2, border: `1px solid ${T.border}`, fontSize: '11px', color: T.text2, lineHeight: 1.8,
+        }}>
+          <div style={{ color: T.goldText, fontWeight: 700, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>🎙 Voice Input Guide</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '2px 10px' }}>
+            <span style={{ color: T.teal, fontWeight: 700 }}>1.</span><span>Tap the <strong>mic button</strong> — allow microphone access when prompted</span>
+            <span style={{ color: T.teal, fontWeight: 700 }}>2.</span><span>Speak your task clearly — it transcribes automatically</span>
+            <span style={{ color: T.teal, fontWeight: 700 }}>3.</span><span>Tap again or pause to stop — transcript appears in the text field</span>
+            <span style={{ color: T.teal, fontWeight: 700 }}>4.</span><span>Say keywords like <em>"this week"</em>, <em>"W3"</em>, <em>"today"</em> — fields auto-fill</span>
+          </div>
+          <div style={{ marginTop: '8px', padding: '6px 8px', background: T.amberBg, borderRadius: '6px', color: T.amber, fontSize: '10px' }}>
+            Works best on <strong>Chrome</strong> or <strong>Edge</strong>. Not supported on Firefox or Safari iOS.
+          </div>
+        </div>
       )}
     </div>
   )

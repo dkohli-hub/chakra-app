@@ -56,6 +56,16 @@
       .fab-spin  { animation: fabSpin 8s linear infinite; }
       .krishna-verse { animation: krishnaSlide 0.35s ease forwards; }
 
+      @keyframes micBar {
+        from { transform: scaleY(0.4); opacity: 0.6; }
+        to   { transform: scaleY(1);   opacity: 1; }
+      }
+      @keyframes micPulse {
+        0%,100% { box-shadow: 0 0 0 0px rgba(26,107,90,0.4); }
+        50%     { box-shadow: 0 0 0 8px rgba(26,107,90,0); }
+      }
+      .mic-pulse { animation: micPulse 1.2s ease-in-out infinite; }
+
       @media (max-width: 480px) {
         h1 { font-size: 1.1rem !important; }
         main { padding: 0.5rem !important; }
