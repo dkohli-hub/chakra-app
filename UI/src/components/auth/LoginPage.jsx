@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { T } from '../../utils/theme'
 
 const DEV_USERS = [
   { username: 'dk',      password: 'dk@chakra',      role: 'admin' },
@@ -10,12 +11,12 @@ const DEV_USERS = [
 ]
 
 export default function LoginPage() {
-  const { login } = useAuth()
-  const navigate = useNavigate()
+  const { login }  = useAuth()
+  const navigate   = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [error, setError]       = useState('')
+  const [loading, setLoading]   = useState(false)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -33,20 +34,18 @@ export default function LoginPage() {
 
   return (
     <div style={styles.page}>
-      {/* Background radial glow */}
-      <div style={styles.glow} />
-
       <div style={styles.container}>
-        {/* Logo */}
         <div style={styles.logoWrap}>
-          <img
-            src="/chakra-logo.png"
-            alt="Chakra™"
-            style={styles.logo}
-          />
+          <img src="/chakra-logo.png" alt="Chakra™" style={styles.logo} />
         </div>
 
-        {/* Tagline — character-by-character slide in from left */}
+        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 700, color: T.forest, letterSpacing: '4px', marginBottom: '4px' }}>
+          CHAKRA
+        </div>
+        <div style={{ fontSize: '9px', color: T.goldText, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '6px' }}>
+          YOUR MIND, STRUCTURED.
+        </div>
+
         <div style={styles.tagline}>
           <p style={styles.tagSub}>
             {'Karma Kshetra™ — The Field of Action'.split('').map((ch, i) => (
@@ -66,14 +65,12 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Divider */}
         <div style={styles.divider}>
           <div style={styles.dividerLine} />
           <span style={styles.dividerText} className="om-spin">ॐ</span>
           <div style={styles.dividerLine} />
         </div>
 
-        {/* Login form */}
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.inputWrap}>
             <span style={styles.inputIcon}>👤</span>
@@ -99,23 +96,15 @@ export default function LoginPage() {
             />
           </div>
 
-          {error && (
-            <div style={styles.errorBox}>
-              {error}
-            </div>
-          )}
+          {error && <div style={styles.errorBox}>{error}</div>}
 
           <button type="submit" disabled={loading} style={styles.btn}>
             {loading ? 'Entering...' : 'Enter Karma Kshetra™'}
           </button>
         </form>
 
-        {/* Footer */}
-        <p style={styles.footer}>
-          a SUTRA system by DK · House of DK · Aux Services LLC
-        </p>
+        <p style={styles.footer}>a SUTRA system by DK · House of DK · Aux Services LLC</p>
 
-        {/* DEV ONLY panel — remove before go-live */}
         <div style={styles.devPanel}>
           <p style={styles.devTitle}>Dev credentials</p>
           {DEV_USERS.map(u => (
@@ -138,175 +127,82 @@ export default function LoginPage() {
 const styles = {
   page: {
     minHeight: '100vh',
-    background: '#061A0F',
+    background: T.pageBg,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '1rem',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  glow: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -60%)',
-    width: '600px',
-    height: '600px',
-    borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%)',
-    pointerEvents: 'none',
   },
   container: {
-    position: 'relative',
-    zIndex: 1,
     width: '100%',
     maxWidth: '400px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
-  logoWrap: {
-    marginBottom: '0.5rem',
-  },
-  logo: {
-    width: '200px',
-    height: '200px',
-    objectFit: 'contain',
-    filter: 'drop-shadow(0 0 24px rgba(201,168,76,0.35))',
-  },
-  tagline: {
-    textAlign: 'center',
-    marginBottom: '1.25rem',
-  },
-  tagSub: {
-    color: '#8b7a4a',
-    fontSize: '12px',
-    letterSpacing: '0.08em',
-    margin: 0,
-    fontStyle: 'italic',
-  },
-  divider: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    width: '100%',
-    marginBottom: '1.5rem',
-  },
-  dividerLine: {
-    flex: 1,
-    height: '1px',
-    background: 'linear-gradient(to right, transparent, #C9A84C40, transparent)',
-  },
-  dividerText: {
-    color: '#C9A84C',
-    fontSize: '16px',
-    opacity: 0.6,
-  },
+  logoWrap:   { marginBottom: '0.5rem' },
+  logo:       { width: '200px', height: '200px', objectFit: 'contain', filter: `drop-shadow(0 0 24px ${T.gold}55)` },
+  tagline:    { textAlign: 'center', marginBottom: '1.25rem' },
+  tagSub:     { color: T.goldText, fontSize: '12px', letterSpacing: '0.08em', margin: 0, fontStyle: 'italic' },
+  divider:    { display: 'flex', alignItems: 'center', gap: '0.75rem', width: '100%', marginBottom: '1.5rem' },
+  dividerLine:{ flex: 1, height: '1px', background: `linear-gradient(to right, transparent, ${T.gold}60, transparent)` },
+  dividerText:{ color: T.gold, fontSize: '16px', opacity: 0.7 },
   form: {
     width: '100%',
-    background: 'rgba(26,107,90,0.06)',
-    border: '1px solid rgba(201,168,76,0.2)',
-    borderRadius: '12px',
+    background: T.surface,
+    border: `1px solid ${T.border}`,
+    borderRadius: '14px',
     padding: '1.5rem',
-    backdropFilter: 'blur(10px)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
     marginBottom: '1rem',
   },
   inputWrap: {
     display: 'flex',
     alignItems: 'center',
-    background: 'rgba(0,0,0,0.3)',
-    border: '1px solid rgba(201,168,76,0.25)',
+    background: T.surface2,
+    border: `1px solid ${T.border}`,
     borderRadius: '8px',
     overflow: 'hidden',
   },
-  inputIcon: {
-    padding: '0 0.75rem',
-    fontSize: '14px',
-    opacity: 0.5,
-  },
+  inputIcon:  { padding: '0 0.75rem', fontSize: '14px', opacity: 0.5 },
   input: {
     flex: 1,
     background: 'transparent',
     border: 'none',
     outline: 'none',
-    color: '#e6edf3',
+    color: T.text,
     fontSize: '14px',
     padding: '0.7rem 0.75rem 0.7rem 0',
-    fontFamily: 'system-ui, sans-serif',
+    fontFamily: "'Montserrat', system-ui, sans-serif",
   },
   errorBox: {
     marginTop: '0.75rem',
     padding: '0.5rem 0.75rem',
-    background: 'rgba(183,28,28,0.15)',
-    border: '1px solid rgba(183,28,28,0.4)',
+    background: T.redBg,
+    border: `1px solid ${T.red}40`,
     borderRadius: '6px',
-    color: '#ef9a9a',
+    color: T.red,
     fontSize: '12px',
   },
   btn: {
     width: '100%',
     marginTop: '1.25rem',
     padding: '0.75rem',
-    background: 'linear-gradient(135deg, #1A6B5A, #0D4A3A)',
-    border: '1px solid rgba(201,168,76,0.3)',
+    background: T.teal,
+    border: 'none',
     borderRadius: '8px',
-    color: '#C9A84C',
+    color: '#FFFFFF',
     fontSize: '14px',
     fontWeight: 700,
     cursor: 'pointer',
     letterSpacing: '0.05em',
-    transition: 'opacity 0.2s',
+    fontFamily: "'Montserrat', system-ui, sans-serif",
   },
-  footer: {
-    color: '#3a5a48',
-    fontSize: '10px',
-    letterSpacing: '0.06em',
-    textAlign: 'center',
-    marginBottom: '1.5rem',
-  },
-  devPanel: {
-    width: '100%',
-    background: 'rgba(255,255,255,0.02)',
-    border: '1px dashed #21262D',
-    borderRadius: '8px',
-    padding: '0.75rem 1rem',
-  },
-  devTitle: {
-    color: '#3a4a40',
-    fontSize: '10px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-    marginBottom: '0.5rem',
-    margin: '0 0 0.5rem 0',
-  },
-  devRow: {
-    display: 'flex',
-    width: '100%',
-    alignItems: 'center',
-    gap: '0.75rem',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    padding: '3px 0',
-    textAlign: 'left',
-  },
-  devUser: {
-    color: '#C9A84C',
-    fontSize: '12px',
-    minWidth: '64px',
-    fontWeight: 600,
-  },
-  devPass: {
-    color: '#3a5a48',
-    fontSize: '12px',
-    flex: 1,
-  },
-  devBadge: {
-    fontSize: '10px',
-    color: '#00BFA5',
-    border: '1px solid #00BFA5',
-    borderRadius: '3px',
-    padding: '0 4px',
-  },
+  footer:   { color: T.textMuted, fontSize: '10px', letterSpacing: '0.06em', textAlign: 'center', marginBottom: '1.5rem' },
+  devPanel: { width: '100%', background: T.surface, border: `1px dashed ${T.border}`, borderRadius: '8px', padding: '0.75rem 1rem' },
+  devTitle: { color: T.textMuted, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem 0' },
+  devRow:   { display: 'flex', width: '100%', alignItems: 'center', gap: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', padding: '3px 0', textAlign: 'left' },
+  devUser:  { color: T.goldText, fontSize: '12px', minWidth: '64px', fontWeight: 600 },
+  devPass:  { color: T.textMuted, fontSize: '12px', flex: 1 },
+  devBadge: { fontSize: '10px', color: T.teal, border: `1px solid ${T.teal}`, borderRadius: '3px', padding: '0 4px' },
 }

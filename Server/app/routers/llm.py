@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from ..dependencies import get_current_user
 from ..services.openrouter import chat, chat_vision
+from ..config import settings
 
 router = APIRouter(prefix="/api/llm", tags=["llm"])
 
@@ -19,6 +20,18 @@ class ChatRequest(BaseModel):
     image_base64: Optional[str] = None
 
 
+class ResearchRequest(BaseModel):
+    question: str
+
+
+RESEARCH_SYSTEM = (
+    "You are a Chakra™ Research Assistant — a calm, insightful guide grounded in the philosophy "
+    "of the Bhagavad Gita and modern productivity wisdom. Answer clearly and concisely. "
+    "When relevant, relate insights to action, clarity, or the user's personal growth. "
+    "Avoid filler. Be direct, wise, and practical."
+)
+
+
 @router.post("")
 async def llm_chat(data: ChatRequest, user_id: int = Depends(get_current_user)):
     try:
@@ -32,6 +45,19 @@ async def llm_chat(data: ChatRequest, user_id: int = Depends(get_current_user)):
         else:
             messages = [m.model_dump() for m in data.messages]
             content = await chat(messages, data.model)
+        return {"content": content}
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=str(e))
+
+
+@router.post("/research")
+async def llm_research(data: ResearchRequest, user_id: int = Depends(get_current_user)):
+    try:
+        messages = [
+            {"role": "system", "content": RESEARCH_SYSTEM},
+            {"role": "user", "content": data.question},
+        ]
+        content = await chat(messages, settings.research_model)
         return {"content": content}
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e))

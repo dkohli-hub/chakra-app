@@ -1,31 +1,58 @@
 import { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { useTasks } from '../../hooks/useTasks'
+import { T } from '../../utils/theme'
 import TabNav from './TabNav'
+import QuickGatherFAB from '../fab/QuickGatherFAB'
 import BatteryTab from '../tabs/BatteryTab'
 import GatherTab from '../tabs/GatherTab'
 import TimeTab from '../tabs/TimeTab'
 import KarmaTab from '../tabs/KarmaTab'
 import GitaTab from '../tabs/GitaTab'
 import SoulTab from '../tabs/SoulTab'
-import SoulSaysTab from '../tabs/SoulSaysTab'
 import BrainTwinTab from '../tabs/BrainTwinTab'
-import KshetraViewTab from '../tabs/KshetraViewTab'
 import DataTab from '../tabs/DataTab'
 import ScoreTab from '../tabs/ScoreTab'
-import ProfileTab from '../tabs/ProfileTab'
 import SmartFetch from '../smartfetch/SmartFetch'
+import CalendarModal from '../calendar/CalendarModal'
+
+const KRISHNA_VERSES = [
+  '"Do your duty without attachment to results." — Gita 3.19',
+  '"The soul is never born nor dies at any time." — Gita 2.20',
+  '"Let right deeds be thy motive, not the fruit which comes from them." — Gita 2.47',
+  '"Yoga is skill in action." — Gita 2.50',
+  '"The mind is restless and difficult to restrain, but it is subdued by practice." — Gita 6.35',
+  '"A person can rise through the efforts of their own mind." — Gita 6.5',
+  '"This is the royal secret. Surrender everything to Me. I will carry you." — Gita 9.34',
+  '"Among thousands, barely one seeks Me. Among seekers, barely one knows Me." — Gita 7.3',
+  '"Cut the deep-rooted tree of samsara with the axe of detachment." — Gita 15.3',
+  '"Whatever occupies your mind at death — that is what you become." — Gita 8.6',
+]
 
 export default function KarmaKshetra() {
-  const [activeTab, setActiveTab] = useState('Gather')
-  const [showExport, setShowExport] = useState(false)
-  const [copyMsg, setCopyMsg] = useState('')
+  const [activeTab, setActiveTab]       = useState('Gather')
+  const [showExport, setShowExport]     = useState(false)
+  const [copyMsg, setCopyMsg]           = useState('')
+  const [krishnaOn, setKrishnaOn]       = useState(false)
+  const [krishnaVerse, setKrishnaVerse] = useState('')
+  const [showVerse, setShowVerse]       = useState(false)
+  const [showCalendar, setShowCalendar] = useState(false)
   const { logout } = useAuth()
   const taskProps = useTasks()
   const { tasks, deleteCompleted, importTasks, addedSinceBackup, resetBackupCounter } = taskProps
 
   const active = tasks.filter(t => !t.completed).length
   const done   = tasks.filter(t => t.completed).length
+
+  function toggleKrishna() {
+    if (!krishnaOn) {
+      const verse = KRISHNA_VERSES[Math.floor(Math.random() * KRISHNA_VERSES.length)]
+      setKrishnaVerse(verse)
+      setShowVerse(true)
+      setTimeout(() => setShowVerse(false), 5000)
+    }
+    setKrishnaOn(o => !o)
+  }
 
   function renderTab() {
     switch (activeTab) {
@@ -35,17 +62,13 @@ export default function KarmaKshetra() {
       case 'Karma':      return <KarmaTab {...taskProps} />
       case 'Gita':       return <GitaTab tasks={tasks} updateTask={taskProps.updateTask} deleteTask={taskProps.deleteTask} />
       case 'Soul':       return <SoulTab tasks={tasks} loading={taskProps.loading} />
-      case 'Soul Says':  return <SoulSaysTab tasks={tasks} loading={taskProps.loading} updateTask={taskProps.updateTask} deleteTask={taskProps.deleteTask} />
       case 'Brain Twin': return <BrainTwinTab tasks={tasks} loading={taskProps.loading} />
-      case 'Kshetra':    return <KshetraViewTab tasks={tasks} loading={taskProps.loading} updateTask={taskProps.updateTask} />
       case 'Data':       return <DataTab tasks={tasks} loading={taskProps.loading} />
       case 'Score':      return <ScoreTab tasks={tasks} loading={taskProps.loading} />
-      case 'Profile':    return <ProfileTab tasks={tasks} loading={taskProps.loading} />
       default:           return null
     }
   }
 
-  // ── Export helpers ───────────────────────────────────────
   function exportAsText() {
     return tasks.filter(t => !t.completed).map((t, i) =>
       `${i + 1}. [${t.bucket ?? '—'}] ${t.title} | ${t.weightage ?? '—'} | ${t.time_horizon ?? '—'} | ${t.life_area ?? '—'}`
@@ -97,7 +120,7 @@ export default function KarmaKshetra() {
     const url  = URL.createObjectURL(blob)
     const a    = document.createElement('a')
     a.href     = url
-    a.download = `karma-kshetra-backup-${new Date().toISOString().slice(0,10)}.json`
+    a.download = `karma-kshetra-backup-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
     setCopyMsg('JSON file downloaded!')
@@ -105,33 +128,81 @@ export default function KarmaKshetra() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0D1117', color: '#e6edf3', fontFamily: 'system-ui, sans-serif' }}>
-      <header style={{ padding: '0.75rem 1.25rem', borderBottom: '1px solid #C9A84C', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+    <div style={{ minHeight: '100vh', background: T.pageBg, color: T.text, fontFamily: "'Montserrat', system-ui, sans-serif", paddingBottom: '90px' }}>
+
+      {/* Krishna verse toast */}
+      {showVerse && (
+        <div
+          className="krishna-verse"
+          style={{
+            position: 'fixed', top: '72px', left: '50%', transform: 'translateX(-50%)',
+            background: T.goldBg, border: `1px solid ${T.gold}`,
+            color: T.forest, padding: '12px 18px', borderRadius: '12px',
+            fontFamily: "'Cormorant Garamond', serif", fontSize: '13px', fontStyle: 'italic',
+            zIndex: 999, maxWidth: '340px', width: 'calc(100% - 32px)',
+            textAlign: 'center', lineHeight: 1.6,
+            boxShadow: `0 4px 20px ${T.gold}40`,
+          }}
+        >
+          {krishnaVerse}
+        </div>
+      )}
+
+      {/* Header */}
+      <header style={{
+        padding: '0.75rem 1.25rem',
+        borderBottom: `1px solid ${T.border}`,
+        display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
+        background: T.surface,
+        boxShadow: '0 1px 6px rgba(0,0,0,0.06)',
+        position: 'sticky', top: 0, zIndex: 100,
+      }}>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src="/logo.png" alt="Chakra" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+          <img src="/logo.png" alt="Chakra" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${T.gold}`, flexShrink: 0 }} />
           <div>
-            <h1 style={{ color: '#C9A84C', margin: 0, fontFamily: 'serif', fontSize: '1.3rem', lineHeight: 1 }}>Karma Kshetra™</h1>
-            <p style={{ color: '#6e7681', fontSize: '10px', margin: '2px 0 0', letterSpacing: '0.05em' }}>
+            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: T.forest, margin: 0, fontSize: '1.3rem', lineHeight: 1, fontWeight: 700, letterSpacing: '3px' }}>CHAKRA</h1>
+            <p style={{ color: T.goldText, fontSize: '9px', margin: '2px 0 0', letterSpacing: '1.5px', fontWeight: 600, textTransform: 'uppercase' }}>
               ⟳ synced · {tasks.length} tasks
             </p>
           </div>
         </div>
 
         <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <span style={statPill('#1A6B5A', '#00BFA5')}>{active} active</span>
-          <span style={statPill('#21262D', '#6e7681')}>{done} done</span>
+          <span style={statPill(T.tealBg, T.teal)}>{active} active</span>
+          <span style={statPill(T.surface2, T.textMuted)}>{done} done</span>
 
           {addedSinceBackup >= 3 && (
-            <span style={statPill('#2A1A00', '#FFB347')} title="You've added tasks — consider exporting a backup">
+            <span style={statPill(T.amberBg, T.amber)} title="You've added tasks — consider exporting a backup">
               💾 backup?
             </span>
           )}
 
-          <button onClick={handleExportOpen} style={headerBtn('export')}>↗ Export</button>
+          <button
+            onClick={() => setShowCalendar(true)}
+            title="Kriya™ — Google Calendar"
+            style={{ ...hBtn, background: T.surface2, border: `1px solid ${T.border}`, color: T.text2 }}
+          >
+            📅 Kriya™
+          </button>
+
+          <button
+            onClick={toggleKrishna}
+            title="Krishna Mode — show Gita verse"
+            style={{
+              ...hBtn,
+              background: krishnaOn ? T.goldBg : T.surface2,
+              border: `1px solid ${krishnaOn ? T.gold : T.border}`,
+              color: krishnaOn ? T.goldText : T.text2,
+            }}
+          >
+            🙏 KM
+          </button>
+
+          <button onClick={handleExportOpen} style={{ ...hBtn, background: T.teal, border: `1px solid ${T.teal}`, color: '#fff' }}>↗ Export</button>
           {done > 0 && (
-            <button onClick={handleClearCompleted} style={headerBtn('clear')}>✕ Clear done</button>
+            <button onClick={handleClearCompleted} style={{ ...hBtn, background: T.surface, border: `1px solid ${T.red}`, color: T.red }}>✕ Clear done</button>
           )}
-          <button onClick={logout} style={headerBtn('logout')}>Logout</button>
+          <button onClick={logout} style={{ ...hBtn, background: T.surface, border: `1px solid ${T.border}`, color: T.text2 }}>Logout</button>
         </div>
       </header>
 
@@ -139,19 +210,16 @@ export default function KarmaKshetra() {
       {showExport && (
         <div style={modalOverlay} onClick={() => setShowExport(false)}>
           <div style={modalBox} onClick={e => e.stopPropagation()}>
-
-            {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
               <div>
-                <div style={{ color: '#C9A84C', fontWeight: 700, fontSize: '14px', letterSpacing: '0.06em' }}>Export / Backup</div>
-                <div style={{ color: '#6e7681', fontSize: '10px', marginTop: '2px' }}>{tasks.filter(t=>!t.completed).length} active tasks · {new Date().toLocaleDateString()}</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", color: T.goldText, fontWeight: 700, fontSize: '18px' }}>Export / Backup</div>
+                <div style={{ color: T.textMuted, fontSize: '10px', marginTop: '2px' }}>{tasks.filter(t => !t.completed).length} active tasks · {new Date().toLocaleDateString()}</div>
               </div>
-              <button onClick={() => setShowExport(false)} style={{ background: 'none', border: 'none', color: '#6e7681', cursor: 'pointer', fontSize: '20px', lineHeight: 1, padding: '0 4px' }}>×</button>
+              <button onClick={() => setShowExport(false)} style={{ background: 'none', border: 'none', color: T.textMuted, cursor: 'pointer', fontSize: '20px', lineHeight: 1, padding: '0 4px' }}>×</button>
             </div>
 
-            {/* Success toast */}
             {copyMsg && (
-              <div style={{ background: '#0F2A1A', border: '1px solid #1A6B5A', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', color: '#6BCB77', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ background: T.greenBg, border: `1px solid ${T.green}`, borderRadius: '6px', padding: '6px 10px', fontSize: '11px', color: T.green, marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 ✓ {copyMsg}
               </div>
             )}
@@ -160,14 +228,12 @@ export default function KarmaKshetra() {
               <ExportRow icon="📋" label="Plain text" desc="Readable list — paste into Notes or Docs" btnLabel="Copy" onAction={() => copyToClipboard(exportAsText(), 'Plain text')} />
               <ExportRow icon="💬" label="WhatsApp" desc="Bold formatted, ready to share" btnLabel="Copy" onAction={() => copyToClipboard(exportAsWhatsApp(), 'WhatsApp text')} />
               <ExportRow icon="✉" label="Email" desc="Opens mail to dh.kohli@gmail.com" btnLabel="Open" onAction={handleEmailExport} />
-
-              {/* JSON row — two buttons */}
               <div style={exportRowStyle}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span style={iconBox}>{ }</span>
                   <div>
-                    <div style={{ color: '#e6edf3', fontSize: '12px', fontWeight: 600 }}>Raw JSON</div>
-                    <div style={{ color: '#6e7681', fontSize: '10px' }}>Full backup — use for Import / Sync</div>
+                    <div style={{ color: T.text, fontSize: '12px', fontWeight: 600 }}>Raw JSON</div>
+                    <div style={{ color: T.textMuted, fontSize: '10px' }}>Full backup — use for Import / Sync</div>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
@@ -176,7 +242,6 @@ export default function KarmaKshetra() {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       )}
@@ -185,6 +250,10 @@ export default function KarmaKshetra() {
         <TabNav active={activeTab} onChange={setActiveTab} />
         {renderTab()}
       </main>
+
+      <QuickGatherFAB onAdd={taskProps.addTask} />
+
+      {showCalendar && <CalendarModal onClose={() => setShowCalendar(false)} />}
 
       <SmartFetch tasks={tasks} updateTask={taskProps.updateTask} deleteTask={taskProps.deleteTask} />
     </div>
@@ -197,8 +266,8 @@ function ExportRow({ icon, label, desc, btnLabel, onAction }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <span style={iconBox}>{icon}</span>
         <div>
-          <div style={{ color: '#e6edf3', fontSize: '12px', fontWeight: 600 }}>{label}</div>
-          <div style={{ color: '#6e7681', fontSize: '10px' }}>{desc}</div>
+          <div style={{ color: T.text, fontSize: '12px', fontWeight: 600 }}>{label}</div>
+          <div style={{ color: T.textMuted, fontSize: '10px' }}>{desc}</div>
         </div>
       </div>
       <button onClick={onAction} style={exportBtnPrimary}>{btnLabel}</button>
@@ -206,30 +275,24 @@ function ExportRow({ icon, label, desc, btnLabel, onAction }) {
   )
 }
 
-const exportRowStyle    = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0D1117', border: '1px solid #21262D', borderRadius: '8px', padding: '10px 12px', gap: '8px' }
-const iconBox           = { fontSize: '16px', width: '28px', textAlign: 'center', flexShrink: 0 }
-const exportBtnPrimary  = { background: '#1A6B5A', border: '1px solid #00BFA5', color: '#fff', borderRadius: '5px', padding: '5px 12px', cursor: 'pointer', fontSize: '11px', fontWeight: 700, whiteSpace: 'nowrap' }
-const exportBtnSecondary = { background: 'transparent', border: '1px solid #30363d', color: '#8b949e', borderRadius: '5px', padding: '5px 10px', cursor: 'pointer', fontSize: '11px', fontWeight: 600, whiteSpace: 'nowrap' }
+const exportRowStyle     = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: T.surface2, border: `1px solid ${T.border}`, borderRadius: '8px', padding: '10px 12px', gap: '8px' }
+const iconBox            = { fontSize: '16px', width: '28px', textAlign: 'center', flexShrink: 0 }
+const exportBtnPrimary   = { background: T.teal, border: 'none', color: '#fff', borderRadius: '5px', padding: '5px 12px', cursor: 'pointer', fontSize: '11px', fontWeight: 700, whiteSpace: 'nowrap' }
+const exportBtnSecondary = { background: 'transparent', border: `1px solid ${T.border}`, color: T.text2, borderRadius: '5px', padding: '5px 10px', cursor: 'pointer', fontSize: '11px', fontWeight: 600, whiteSpace: 'nowrap' }
 
 function statPill(bg, color) {
   return { background: bg, color, fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 600 }
 }
 
-const BTN_VARIANTS = {
-  export:  { background: '#1A6B5A', border: '1px solid #00BFA5', color: '#fff' },
-  clear:   { background: 'transparent', border: '1px solid #E07A5F', color: '#E07A5F' },
-  logout:  { background: 'transparent', border: '1px solid #30363d', color: '#8b949e' },
-}
-function headerBtn(variant) {
-  return { ...BTN_VARIANTS[variant], padding: '4px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }
-}
+const hBtn = { padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontSize: '11px', fontWeight: 600, whiteSpace: 'nowrap', fontFamily: "'Montserrat', system-ui, sans-serif" }
 
 const modalOverlay = {
-  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 200,
+  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 200,
   display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
 }
 
 const modalBox = {
-  background: '#161B22', border: '1px solid #C9A84C40', borderRadius: '12px',
+  background: T.surface, border: `1px solid ${T.border}`, borderRadius: '14px',
   padding: '1.25rem', width: '100%', maxWidth: '440px',
+  boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
 }

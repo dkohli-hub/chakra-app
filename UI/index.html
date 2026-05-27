@@ -4,19 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/logo.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>Chakra™ — Karma Kshetra™</title>
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      html, body { background: #0D1117; color: #e6edf3; font-family: system-ui, -apple-system, sans-serif; overflow-x: hidden; }
+      html, body { background: #F5F3EE; color: #1A1A1A; font-family: 'Montserrat', system-ui, sans-serif; overflow-x: hidden; }
 
-      /* Remove any white border/outline */
       :focus { outline: none; }
       :focus-visible { outline: 2px solid #1A6B5A; outline-offset: 2px; }
 
       /* Scrollbar */
       ::-webkit-scrollbar { width: 6px; height: 6px; }
-      ::-webkit-scrollbar-track { background: #0D1117; }
-      ::-webkit-scrollbar-thumb { background: #21262D; border-radius: 3px; }
+      ::-webkit-scrollbar-track { background: #F5F3EE; }
+      ::-webkit-scrollbar-thumb { background: #D0C8BC; border-radius: 3px; }
 
       /* Animations */
       @keyframes fadeSlideIn {
@@ -32,16 +32,6 @@
         from { opacity: 1; max-height: 100px; margin-bottom: 0.4rem; }
         to   { opacity: 0; max-height: 0;    margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
       }
-      @keyframes tabPop {
-        0%   { transform: scale(1); }
-        50%  { transform: scale(1.18); }
-        100% { transform: scale(1); }
-      }
-
-      .fade-in   { animation: fadeSlideIn 0.22s ease forwards; }
-      .check-pop { animation: checkPop 0.25s ease; }
-      .task-done { animation: taskDone 0.28s ease forwards; overflow: hidden; }
-
       @keyframes charSlideIn {
         from { opacity: 0; transform: translateX(-18px); }
         to   { opacity: 1; transform: translateX(0); }
@@ -50,9 +40,22 @@
         from { transform: rotate(0deg); }
         to   { transform: rotate(360deg); }
       }
-      .om-spin { display: inline-block; animation: omSpin 7s linear infinite; transform-origin: center; }
+      @keyframes fabSpin {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+      }
+      @keyframes krishnaSlide {
+        from { opacity: 0; transform: translateY(-16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
 
-      /* Responsive helpers */
+      .fade-in   { animation: fadeSlideIn 0.22s ease forwards; }
+      .check-pop { animation: checkPop 0.25s ease; }
+      .task-done { animation: taskDone 0.28s ease forwards; overflow: hidden; }
+      .om-spin   { display: inline-block; animation: omSpin 7s linear infinite; transform-origin: center; }
+      .fab-spin  { animation: fabSpin 8s linear infinite; }
+      .krishna-verse { animation: krishnaSlide 0.35s ease forwards; }
+
       @media (max-width: 480px) {
         h1 { font-size: 1.1rem !important; }
         main { padding: 0.5rem !important; }

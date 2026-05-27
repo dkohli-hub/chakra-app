@@ -2,32 +2,33 @@ import { useState } from 'react'
 import TaskCard from '../dashboard/TaskCard'
 import { timeScore, isOverdue, TIME_FRAMES } from '../../utils/horizonLogic'
 import { BAND_STYLES, getBand } from '../../utils/colorSystem'
+import { T } from '../../utils/theme'
 
 const HORIZON_ORDER = ['today', 'thisWeek', 'nextWeek', 'thisMonth', 'Q3', 'Q4', 'thisYear', '1year', 'parkingLot']
 
 function TimeGroup({ horizon, tasks, onUpdate, onDelete }) {
   const [collapsed, setCollapsed] = useState(false)
-  const band = getBand(horizon)
-  const style = band ? BAND_STYLES[band] : { color: '#8b949e', bg: '#161B22' }
+  const band    = getBand(horizon)
+  const style   = band ? BAND_STYLES[band] : { color: T.textMuted, bg: T.surface2 }
   const overdueCount = tasks.filter(t => isOverdue(t.time_horizon)).length
 
   return (
-    <div style={{ marginBottom: '0.75rem', borderRadius: '8px', overflow: 'hidden', border: '1px solid #21262D' }}>
+    <div style={{ marginBottom: '0.75rem', borderRadius: '10px', overflow: 'hidden', border: `1px solid ${T.border}`, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
       <div
         onClick={() => setCollapsed(c => !c)}
-        style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.55rem 1rem', cursor: 'pointer', background: '#161B22', borderLeft: band === 'teal' ? '4px double #00BFA5' : `3px solid ${style.color}` }}
+        style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 1rem', cursor: 'pointer', background: T.surface, borderLeft: band === 'teal' ? `4px double ${T.workingZone}` : `3px solid ${style.color}` }}
       >
         <span style={{ color: style.color, fontWeight: 700, fontSize: '13px', flex: 1 }}>{horizon}</span>
         {overdueCount > 0 && (
-          <span style={{ fontSize: '11px', background: '#B71C1C', color: '#fff', borderRadius: '3px', padding: '1px 6px', fontWeight: 700 }}>
+          <span style={{ fontSize: '11px', background: T.red, color: '#fff', borderRadius: '3px', padding: '1px 6px', fontWeight: 700 }}>
             ★ {overdueCount} overdue
           </span>
         )}
-        <span style={{ color: '#C9A84C', fontSize: '20px', fontFamily: 'serif' }}>{tasks.length}</span>
-        <span style={{ color: '#6e7681', fontSize: '13px', transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)', transition: 'transform 0.2s' }}>✶</span>
+        <span style={{ color: T.goldText, fontSize: '18px', fontFamily: "'Cormorant Garamond', serif", fontWeight: 600 }}>{tasks.length}</span>
+        <span style={{ color: T.textMuted, fontSize: '13px', transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)', transition: 'transform 0.2s' }}>▶</span>
       </div>
       {!collapsed && (
-        <div style={{ padding: '0.5rem 0.75rem' }}>
+        <div style={{ padding: '0.5rem 0.75rem', background: T.surface3 }}>
           {tasks.map(t => <TaskCard key={t.id} task={t} onUpdate={onUpdate} onDelete={onDelete} />)}
         </div>
       )}
@@ -36,10 +37,9 @@ function TimeGroup({ horizon, tasks, onUpdate, onDelete }) {
 }
 
 export default function TimeTab({ tasks, loading, updateTask, deleteTask }) {
-  if (loading) return <p style={{ color: '#8b949e' }}>Loading...</p>
+  if (loading) return <p style={{ color: T.textMuted }}>Loading...</p>
 
   const active = tasks.filter(t => !t.completed)
-
   const grouped = {}
   HORIZON_ORDER.forEach(h => { grouped[h] = [] })
   grouped['(none)'] = []
@@ -51,7 +51,6 @@ export default function TimeTab({ tasks, loading, updateTask, deleteTask }) {
     else grouped['(none)'].push(t)
   })
 
-  // Sort within each group by score ascending (most urgent first)
   Object.keys(grouped).forEach(h => {
     if (h !== 'parkingLot' && h !== '(none)') {
       grouped[h].sort((a, b) => timeScore(a.time_horizon) - timeScore(b.time_horizon))
@@ -63,8 +62,8 @@ export default function TimeTab({ tasks, loading, updateTask, deleteTask }) {
   return (
     <div>
       {allOverdue.length > 0 && (
-        <div style={{ background: '#1A0A0A', border: '1px solid #B71C1C', borderRadius: '8px', padding: '0.6rem 1rem', marginBottom: '1rem' }}>
-          <span style={{ color: '#B71C1C', fontWeight: 700, fontSize: '13px' }}>★ {allOverdue.length} overdue task{allOverdue.length > 1 ? 's' : ''} — costs energy daily</span>
+        <div style={{ background: T.redBg, border: `1px solid ${T.red}40`, borderRadius: '8px', padding: '0.6rem 1rem', marginBottom: '1rem' }}>
+          <span style={{ color: T.red, fontWeight: 700, fontSize: '13px' }}>★ {allOverdue.length} overdue task{allOverdue.length > 1 ? 's' : ''} — costs energy daily</span>
         </div>
       )}
 

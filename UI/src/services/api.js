@@ -26,6 +26,7 @@ export const tasksAPI = {
 export const llmAPI = {
   chat:       (messages, model) => api.post('/api/llm', { messages, model }),
   chatVision: (messages, image_base64) => api.post('/api/llm', { messages, image_base64 }),
+  research:   (question) => api.post('/api/llm/research', { question }),
 }
 
 export default api

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { GITA_CHAPTERS } from '../../data/gitaChapters'
 import { GITA_COLORS } from '../../utils/colorSystem'
+import { T } from '../../utils/theme'
 import TaskCard from '../dashboard/TaskCard'
 
 const TEACHINGS = [
@@ -29,39 +30,39 @@ export default function GitaTab({ tasks = [], updateTask, deleteTask }) {
 
   return (
     <div>
-      <p style={{ color: '#6e7681', fontSize: '12px', marginBottom: '1rem', fontStyle: 'italic' }}>
+      <p style={{ color: T.text2, fontSize: '12px', marginBottom: '1rem', fontStyle: 'italic', fontFamily: "'Cormorant Garamond', serif", fontSize: '14px' }}>
         18 chapters · 18 life arenas · One field of action
       </p>
       {GITA_CHAPTERS.map((ch, i) => {
-        const color = GITA_COLORS[i]
+        const color   = GITA_COLORS[i]
         const chTasks = tasks.filter(t => !t.completed && t.ch === ch.number)
-        const isOpen = expanded === ch.number
+        const isOpen  = expanded === ch.number
 
         return (
-          <div key={ch.number} style={{ marginBottom: '0.4rem', borderRadius: '6px', overflow: 'hidden', border: '1px solid #21262D' }}>
+          <div key={ch.number} style={{ marginBottom: '0.4rem', borderRadius: '8px', overflow: 'hidden', border: `1px solid ${T.border}`, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
             <div
               onClick={() => setExpanded(isOpen ? null : ch.number)}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 0.85rem', cursor: 'pointer', background: '#161B22', borderLeft: `3px solid ${color}` }}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 0.85rem', cursor: 'pointer', background: T.surface, borderLeft: `3px solid ${color}` }}
             >
-              <span style={{ color: '#6e7681', fontSize: '9px', textTransform: 'uppercase', minWidth: '18px' }}>{ch.number}</span>
+              <span style={{ color: T.textMuted, fontSize: '9px', textTransform: 'uppercase', minWidth: '18px' }}>{ch.number}</span>
               <div style={{ flex: 1 }}>
-                <div style={{ color, fontSize: '13px', fontFamily: 'serif' }}>{ch.title}</div>
-                <div style={{ color: '#6e7681', fontSize: '10px', fontStyle: 'italic' }}>{ch.arena}</div>
+                <div style={{ color, fontSize: '13px', fontFamily: "'Cormorant Garamond', serif", fontWeight: 600 }}>{ch.title}</div>
+                <div style={{ color: T.text2, fontSize: '10px', fontStyle: 'italic' }}>{ch.arena}</div>
               </div>
-              <span style={{ color: '#C9A84C', fontSize: '22px', fontFamily: 'serif', fontWeight: 300 }}>{chTasks.length || ''}</span>
-              <span style={{ color: '#6e7681', fontSize: '12px', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>▶</span>
+              <span style={{ color: T.goldText, fontSize: '18px', fontFamily: "'Cormorant Garamond', serif", fontWeight: 600 }}>{chTasks.length || ''}</span>
+              <span style={{ color: T.textMuted, fontSize: '12px', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>▶</span>
             </div>
             {isOpen && (
-              <div style={{ padding: '0.6rem 0.85rem', background: '#0D1117' }}>
-                <blockquote style={{ borderLeft: `3px solid ${color}`, paddingLeft: '0.75rem', margin: '0 0 0.75rem 0', color: '#8b949e', fontSize: '11px', fontStyle: 'italic', background: `${color}15`, padding: '0.4rem 0.75rem', borderRadius: '0 4px 4px 0' }}>
+              <div style={{ padding: '0.6rem 0.85rem', background: T.surface2 }}>
+                <blockquote style={{ borderLeft: `3px solid ${color}`, paddingLeft: '0.75rem', margin: '0 0 0.75rem 0', color: T.text2, fontSize: '11px', fontStyle: 'italic', background: `${color}15`, padding: '0.4rem 0.75rem', borderRadius: '0 4px 4px 0' }}>
                   "{TEACHINGS[i]}"
                 </blockquote>
-                <p style={{ color: '#6e7681', fontSize: '11px', marginBottom: '0.4rem' }}>
+                <p style={{ color: T.text2, fontSize: '11px', marginBottom: '0.4rem' }}>
                   <em>Essence: {ch.essence}</em>
                 </p>
                 {chTasks.length > 0
                   ? chTasks.map(t => <TaskCard key={t.id} task={t} onUpdate={updateTask} onDelete={deleteTask} />)
-                  : <p style={{ color: '#6e7681', fontSize: '12px' }}>No tasks in this arena</p>}
+                  : <p style={{ color: T.textMuted, fontSize: '12px' }}>No tasks in this arena</p>}
               </div>
             )}
           </div>
