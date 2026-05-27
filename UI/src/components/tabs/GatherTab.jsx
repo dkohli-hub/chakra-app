@@ -60,6 +60,11 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
   const [importing, setImporting]       = useState(false)
   const importFileRef = useRef(null)
 
+  // Voice input state
+  const [listening, setListening]   = useState(false)
+  const [voiceError, setVoiceError] = useState(null)
+  const recognitionRef = useRef(null)
+
   // Research chatbot state
   const [researchOpen, setResearchOpen]       = useState(false)
   const [researchInput, setResearchInput]     = useState('')
@@ -176,6 +181,40 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
     }
   }
 
+  // ── Voice input ───────────────────────────────────────────
+  function toggleVoice() {
+    setVoiceError(null)
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SR) { setVoiceError('Speech recognition not supported in this browser. Use Chrome.'); return }
+
+    if (listening) {
+      recognitionRef.current?.stop()
+      return
+    }
+
+    const rec = new SR()
+    rec.lang = 'en-US'
+    rec.interimResults = false
+    rec.maxAlternatives = 1
+    recognitionRef.current = rec
+
+    rec.onstart  = () => setListening(true)
+    rec.onend    = () => setListening(false)
+    rec.onerror  = (e) => { setVoiceError(e.error === 'not-allowed' ? 'Microphone access denied.' : `Error: ${e.error}`); setListening(false) }
+    rec.onresult = (e) => {
+      const transcript = e.results[0][0].transcript.trim()
+      setTitle(prev => {
+        const updated = prev ? prev + '\n' + transcript : transcript
+        const hints = parseKeywords(transcript)
+        if (hints.weightage && !weightage) setWeightage(hints.weightage)
+        if (hints.timeFrame && !timeFrame) setTimeFrame(hints.timeFrame)
+        return updated
+      })
+    }
+
+    rec.start()
+  }
+
   // ── Research chatbot ──────────────────────────────────────
   async function handleResearchSend(e) {
     e.preventDefault()
@@ -198,15 +237,37 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
     <div>
       {/* ── Gather form ───────────────────────────────────── */}
       <form onSubmit={handleAdd} style={formStyle}>
-        <textarea
-          id="gatherTextarea"
-          value={title}
-          onChange={handleTitleChange}
-          placeholder="What is on your mind? One task per line — or paste AI-extracted tasks here"
-          rows={imgBase64 ? 3 : 2}
-          required
-          style={textareaStyle}
-        />
+        <div style={{ position: 'relative' }}>
+          <textarea
+            id="gatherTextarea"
+            value={title}
+            onChange={handleTitleChange}
+            placeholder="What is on your mind? One task per line — or paste AI-extracted tasks here"
+            rows={imgBase64 ? 3 : 2}
+            required
+            style={{ ...textareaStyle, paddingRight: '42px' }}
+          />
+          <button
+            type="button"
+            onClick={toggleVoice}
+            title={listening ? 'Stop listening' : 'Speak to add task'}
+            style={{
+              position: 'absolute', top: '8px', right: '8px',
+              width: '28px', height: '28px', borderRadius: '50%',
+              background: listening ? T.red : T.tealBg,
+              border: `1.5px solid ${listening ? T.red : T.teal}`,
+              color: listening ? '#fff' : T.teal,
+              cursor: 'pointer', fontSize: '14px', lineHeight: 1,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: listening ? `0 0 0 4px ${T.red}30` : 'none',
+              transition: 'all 0.2s',
+            }}
+          >
+            {listening ? '⏹' : '🎙'}
+          </button>
+        </div>
+        {voiceError && <div style={{ color: T.red, fontSize: '11px', marginTop: '4px' }}>{voiceError}</div>}
+        {listening && <div style={{ color: T.teal, fontSize: '11px', marginTop: '4px', fontStyle: 'italic' }}>🎙 Listening… speak your task</div>}
 
         {/* Image upload section */}
         <div style={imgSectionStyle}>
