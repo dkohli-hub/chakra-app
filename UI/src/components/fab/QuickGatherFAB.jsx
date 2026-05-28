@@ -96,32 +96,41 @@ export default function QuickGatherFAB({ onAdd }) {
             onClick={e => e.stopPropagation()}
             style={{
               width: '100%', maxWidth: '520px',
-              background: T.surface, borderRadius: '22px 22px 0 0',
-              padding: '22px 20px 40px',
+              background: T.surface,
+              borderRadius: '22px 22px 0 0',
+              padding: '20px 16px',
+              paddingBottom: 'calc(20px + env(safe-area-inset-bottom, 16px))',
               boxShadow: '0 -8px 40px rgba(0,0,0,0.18)',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              boxSizing: 'border-box',
             }}
           >
+            {/* Drag handle */}
+            <div style={{ width: '36px', height: '4px', borderRadius: '2px', background: T.border, margin: '0 auto 16px' }} />
+
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
               <div>
                 <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '21px', fontWeight: 700, color: T.forest }}>Quick Gather</div>
                 <div style={{ fontSize: '10px', color: T.text2, marginTop: '1px' }}>One task per line — added to Karya™</div>
               </div>
-              <button onClick={handleClose} style={{ background: 'none', border: 'none', color: T.textMuted, cursor: 'pointer', fontSize: '24px', lineHeight: 1 }}>✕</button>
+              <button onClick={handleClose} style={{ background: 'none', border: 'none', color: T.textMuted, cursor: 'pointer', fontSize: '24px', lineHeight: 1, padding: '4px 8px' }}>✕</button>
             </div>
 
-            {/* Textarea + mic */}
-            <div style={{ position: 'relative' }}>
+            {/* Textarea + mic row */}
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
               <textarea
                 autoFocus
                 value={text}
                 onChange={e => setText(e.target.value)}
-                placeholder={listening ? 'Listening… speak your task' : 'Type or tap the mic to speak your task'}
+                placeholder={listening ? 'Listening… speak your task' : 'Type or tap 🎙 to speak your task'}
                 rows={4}
                 style={{
-                  width: '100%', border: `1.5px solid ${listening ? T.teal : T.border}`,
-                  borderRadius: '11px', padding: '13px 50px 13px 13px',
-                  fontSize: '14px', fontFamily: "'Montserrat', system-ui, sans-serif",
+                  flex: 1, minWidth: 0,
+                  border: `1.5px solid ${listening ? T.teal : T.border}`,
+                  borderRadius: '11px', padding: '13px',
+                  fontSize: '15px', fontFamily: "'Montserrat', system-ui, sans-serif",
                   resize: 'none', background: T.surface2,
                   outline: 'none', color: T.text, lineHeight: 1.6,
                   transition: 'border-color 0.2s',
@@ -131,7 +140,7 @@ export default function QuickGatherFAB({ onAdd }) {
               <MicButton
                 listening={listening}
                 onClick={toggleVoice}
-                style={{ position: 'absolute', top: '10px', right: '10px' }}
+                style={{ marginTop: '10px', flexShrink: 0 }}
               />
             </div>
 
