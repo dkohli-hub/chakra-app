@@ -150,59 +150,63 @@ export default function KarmaKshetra() {
 
       {/* Header */}
       <header style={{
-        padding: '0.75rem 1.25rem',
+        padding: '0.6rem 1rem',
         borderBottom: `1px solid ${T.border}`,
-        display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
+        display: 'flex', alignItems: 'center', gap: '0.5rem',
         background: T.surface,
         boxShadow: '0 1px 6px rgba(0,0,0,0.06)',
         position: 'sticky', top: 0, zIndex: 100,
+        minWidth: 0,
       }}>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src="/logo.png" alt="Chakra" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${T.gold}`, flexShrink: 0 }} />
+        {/* Logo + title */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          <img src="/logo.png" alt="Chakra" style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${T.gold}` }} />
           <div>
-            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: T.forest, margin: 0, fontSize: '1.3rem', lineHeight: 1, fontWeight: 700, letterSpacing: '3px' }}>CHAKRA</h1>
-            <p style={{ color: T.goldText, fontSize: '9px', margin: '2px 0 0', letterSpacing: '1.5px', fontWeight: 600, textTransform: 'uppercase' }}>
-              ⟳ synced · {tasks.length} tasks
+            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: T.forest, margin: 0, fontSize: '1.15rem', lineHeight: 1, fontWeight: 700, letterSpacing: '3px' }}>CHAKRA</h1>
+            <p style={{ color: T.goldText, fontSize: '8px', margin: '1px 0 0', letterSpacing: '1px', fontWeight: 600, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+              {tasks.length} tasks
             </p>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <span style={statPill(T.tealBg, T.teal)}>{active} active</span>
-          <span style={statPill(T.surface2, T.textMuted)}>{done} done</span>
+        {/* Stat pills */}
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexShrink: 0 }}>
+          <span style={statPill(T.tealBg, T.teal)}>{active}</span>
+          <span style={statPill(T.surface2, T.textMuted)}>{done}✓</span>
+          {addedSinceBackup >= 3 && <span style={statPill(T.amberBg, T.amber)}>💾</span>}
+        </div>
 
-          {addedSinceBackup >= 3 && (
-            <span style={statPill(T.amberBg, T.amber)} title="You've added tasks — consider exporting a backup">
-              💾 backup?
-            </span>
-          )}
+        {/* Spacer */}
+        <div style={{ flex: 1 }} />
 
+        {/* Action buttons — scrollable row on mobile */}
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', overflowX: 'auto', flexShrink: 1, minWidth: 0, paddingBottom: '2px' }}>
           <button
             onClick={() => setShowCalendar(true)}
             title="Kriya™ — Google Calendar"
-            style={{ ...hBtn, background: T.surface2, border: `1px solid ${T.border}`, color: T.text2 }}
+            style={{ ...hBtn, background: T.surface2, border: `1px solid ${T.border}`, color: T.text2, flexShrink: 0 }}
           >
-            📅 Kriya™
+            📅
           </button>
 
           <button
             onClick={toggleKrishna}
-            title="Krishna Mode — show Gita verse"
+            title="Krishna Mode"
             style={{
-              ...hBtn,
+              ...hBtn, flexShrink: 0,
               background: krishnaOn ? T.goldBg : T.surface2,
               border: `1px solid ${krishnaOn ? T.gold : T.border}`,
               color: krishnaOn ? T.goldText : T.text2,
             }}
           >
-            🙏 KM
+            🙏
           </button>
 
-          <button onClick={handleExportOpen} style={{ ...hBtn, background: T.teal, border: `1px solid ${T.teal}`, color: '#fff' }}>↗ Export</button>
+          <button onClick={handleExportOpen} style={{ ...hBtn, background: T.teal, border: `1px solid ${T.teal}`, color: '#fff', flexShrink: 0 }}>↗</button>
           {done > 0 && (
-            <button onClick={handleClearCompleted} style={{ ...hBtn, background: T.surface, border: `1px solid ${T.red}`, color: T.red }}>✕ Clear done</button>
+            <button onClick={handleClearCompleted} style={{ ...hBtn, background: T.surface, border: `1px solid ${T.red}`, color: T.red, flexShrink: 0 }}>✕</button>
           )}
-          <button onClick={logout} style={{ ...hBtn, background: T.surface, border: `1px solid ${T.border}`, color: T.text2 }}>Logout</button>
+          <button onClick={logout} style={{ ...hBtn, background: T.surface, border: `1px solid ${T.border}`, color: T.text2, flexShrink: 0 }}>Out</button>
         </div>
       </header>
 
@@ -246,7 +250,7 @@ export default function KarmaKshetra() {
         </div>
       )}
 
-      <main style={{ maxWidth: '860px', margin: '0 auto', padding: '1rem' }}>
+      <main style={{ maxWidth: '860px', margin: '0 auto', padding: '0.75rem', minWidth: 0, overflow: 'hidden' }}>
         <TabNav active={activeTab} onChange={setActiveTab} />
         {renderTab()}
       </main>

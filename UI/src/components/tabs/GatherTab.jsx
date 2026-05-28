@@ -308,7 +308,7 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
           )}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.5rem', marginTop: '0.75rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.5rem', marginTop: '0.75rem' }}>
 
           {/* Weightage */}
           <div style={tileStyle}>
@@ -605,8 +605,8 @@ export function VoiceGuide() {
   )
 }
 
-const formStyle     = { background: T.surface, border: `1px solid ${T.border}`, borderRadius: '10px', padding: '1rem', marginBottom: '1rem', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }
-const tileStyle     = { background: T.surface2, border: `1px solid ${T.border}`, borderRadius: '8px', padding: '0.5rem 0.6rem' }
+const formStyle     = { background: T.surface, border: `1px solid ${T.border}`, borderRadius: '10px', padding: '0.75rem', marginBottom: '1rem', boxShadow: '0 1px 4px rgba(0,0,0,0.05)', overflow: 'hidden' }
+const tileStyle     = { background: T.surface2, border: `1px solid ${T.border}`, borderRadius: '8px', padding: '0.4rem 0.5rem', minWidth: 0, overflow: 'hidden' }
 const tileTitle     = { color: T.goldText, fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '5px' }
 const radioRow      = (a) => ({ display: 'flex', gap: '6px', alignItems: 'center', padding: '2px 4px', borderRadius: '3px', cursor: 'pointer', background: a ? T.tealBg : 'transparent' })
 const selectStyle   = { background: T.surface2, border: `1px solid ${T.border}`, borderRadius: '6px', color: T.text, fontSize: '12px', padding: '5px 8px' }
