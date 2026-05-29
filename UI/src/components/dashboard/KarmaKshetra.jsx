@@ -202,14 +202,14 @@ export default function KarmaKshetra() {
             🙏
           </button>
 
-          <button onClick={handleExportOpen} style={{ ...hBtn, background: T.teal, border: `1px solid ${T.teal}`, color: '#fff', flexShrink: 0 }}>↗</button>
+          <button onClick={handleExportOpen} title="Export" style={{ ...hBtn, background: T.teal, border: `1px solid ${T.teal}`, color: '#fff', flexShrink: 0 }}>↗</button>
           {done > 0 && (
-            <button onClick={handleClearCompleted} style={{ ...hBtn, background: T.surface, border: `1px solid ${T.red}`, color: T.red, flexShrink: 0 }}>✕</button>
+            <button onClick={handleClearCompleted} title="Clear Completed" style={{ ...hBtn, background: T.surface, border: `1px solid ${T.red}`, color: T.red, flexShrink: 0 }}>✕</button>
           )}
           <button onClick={logout} title="Logout" style={{ ...hBtn, background: T.surface, border: `1px solid ${T.border}`, color: T.text2, flexShrink: 0 }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16 13v-2H7V8l-5 4 5 4v-3z"/>
-              <path d="M20 3h-9a2 2 0 0 0-2 2v4h2V5h9v14h-9v-4H9v4a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
+              <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5z"/>
+              <path d="M4 5h8V3H4C2.9 3 2 3.9 2 5v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
             </svg>
           </button>
         </div>
