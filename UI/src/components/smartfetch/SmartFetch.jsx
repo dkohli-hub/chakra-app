@@ -75,7 +75,7 @@ export default function SmartFetch({ tasks, updateTask, deleteTask }) {
         onClick={() => { setOpen(o => !o); setResults(null); setQuery('') }}
         title="Smart Fetch — AI Task Search"
         style={{
-          position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 1000,
+          position: 'fixed', bottom: '88px', right: '1.5rem', zIndex: 1000,
           width: '48px', height: '48px', borderRadius: '50%',
           background: open ? '#1A6B5A' : '#0D1117',
           border: '2px solid #C9A84C',
@@ -91,7 +91,7 @@ export default function SmartFetch({ tasks, updateTask, deleteTask }) {
       {/* Slide-up panel */}
       {open && (
         <div style={{
-          position: 'fixed', bottom: '5rem', right: '1rem', zIndex: 999,
+          position: 'fixed', bottom: '9rem', right: '1rem', zIndex: 999,
           width: 'min(420px, calc(100vw - 2rem))',
           background: '#161B22',
           border: '1px solid #C9A84C40',

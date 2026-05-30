@@ -65,7 +65,7 @@ export default function QuickGatherFAB({ onAdd }) {
       <div
         onClick={() => setOpen(true)}
         style={{
-          position: 'fixed', bottom: '22px',
+          position: 'fixed', bottom: '88px',
           left: 0, right: 0, margin: '0 auto',
           zIndex: 900, cursor: 'pointer',
           width: '62px', height: '62px',
@@ -122,8 +122,8 @@ export default function QuickGatherFAB({ onAdd }) {
               <button onClick={handleClose} style={{ background: 'none', border: 'none', color: T.textMuted, cursor: 'pointer', fontSize: '24px', lineHeight: 1, padding: '4px 8px' }}>✕</button>
             </div>
 
-            {/* Textarea + mic row */}
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+            {/* Textarea with mic inside */}
+            <div style={{ position: 'relative' }}>
               <textarea
                 autoFocus
                 value={text}
@@ -131,9 +131,9 @@ export default function QuickGatherFAB({ onAdd }) {
                 placeholder={listening ? 'Listening… speak your task' : 'Type or tap 🎙 to speak your task'}
                 rows={4}
                 style={{
-                  flex: 1, minWidth: 0,
+                  width: '100%',
                   border: `1.5px solid ${listening ? T.teal : T.border}`,
-                  borderRadius: '11px', padding: '13px',
+                  borderRadius: '11px', padding: '13px', paddingRight: '52px',
                   fontSize: '15px', fontFamily: "'Montserrat', system-ui, sans-serif",
                   resize: 'none', background: T.surface2,
                   outline: 'none', color: T.text, lineHeight: 1.6,
@@ -144,7 +144,7 @@ export default function QuickGatherFAB({ onAdd }) {
               <MicButton
                 listening={listening}
                 onClick={toggleVoice}
-                style={{ marginTop: '10px', flexShrink: 0 }}
+                style={{ position: 'absolute', top: '10px', right: '10px' }}
               />
             </div>
 
