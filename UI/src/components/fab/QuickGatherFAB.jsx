@@ -65,9 +65,10 @@ export default function QuickGatherFAB({ onAdd }) {
       <div
         onClick={() => setOpen(true)}
         style={{
-          position: 'fixed', bottom: '22px', left: '50%',
-          transform: 'translateX(-50%)', zIndex: 900,
-          cursor: 'pointer', width: '62px', height: '62px',
+          position: 'fixed', bottom: '22px',
+          left: 0, right: 0, margin: '0 auto',
+          zIndex: 900, cursor: 'pointer',
+          width: '62px', height: '62px',
         }}
       >
         <img

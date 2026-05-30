@@ -14,8 +14,8 @@ const TABS = [
 
 export default function TabNav({ active, onChange }) {
   return (
-    <div style={{ overflowX: 'auto', marginBottom: '1.25rem', paddingBottom: '4px' }}>
-      <div style={{ display: 'flex', gap: '8px', minWidth: 'max-content', paddingBottom: '2px' }}>
+    <div style={{ overflowX: 'auto', marginBottom: '1.25rem', paddingBottom: '4px', WebkitOverflowScrolling: 'touch' }}>
+      <div style={{ display: 'flex', gap: '8px', width: 'max-content', paddingBottom: '2px' }}>
         {TABS.map((tab) => {
           const isActive = active === tab.key
           return (
