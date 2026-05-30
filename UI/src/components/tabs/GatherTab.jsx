@@ -352,7 +352,7 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
             {LIFE_AREAS.map(la => (
               <label key={la} style={radioRow(lifeArea === la)}>
                 <input type="radio" name="la" value={la} checked={lifeArea === la} onChange={() => setLifeArea(la)} style={{ display: 'none' }} />
-                <span style={{ color: lifeArea === la ? T.goldText : T.textMuted, fontSize: '11px' }}>{la}</span>
+                <span style={{ color: lifeArea === la ? T.goldText : T.textMuted, fontSize: '11px', wordBreak: 'break-word', minWidth: 0 }}>{la}</span>
               </label>
             ))}
           </div>
@@ -386,11 +386,11 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
         </div>
 
         <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem', flexWrap: 'wrap' }}>
-          <select value={ch} onChange={e => setCh(e.target.value)} style={{ ...selectStyle, flex: 1, minWidth: '160px' }}>
+          <select value={ch} onChange={e => setCh(e.target.value)} style={{ ...selectStyle, flex: 1, minWidth: 0, width: '100%' }}>
             <option value="">Gita Chapter (optional)</option>
             {GITA_CHAPTERS.map(c => <option key={c.number} value={c.number}>Ch {c.number} — {c.title}</option>)}
           </select>
-          <button type="submit" disabled={adding} style={btnStyle}>
+          <button type="submit" disabled={adding} style={{ ...btnStyle, width: '100%' }}>
             {adding ? '...' : '+ Add to Chakra™'}
           </button>
         </div>
@@ -608,7 +608,7 @@ export function VoiceGuide() {
 const formStyle     = { background: T.surface, border: `1px solid ${T.border}`, borderRadius: '10px', padding: '0.75rem', marginBottom: '1rem', boxShadow: '0 1px 4px rgba(0,0,0,0.05)', overflow: 'hidden' }
 const tileStyle     = { background: T.surface2, border: `1px solid ${T.border}`, borderRadius: '8px', padding: '0.4rem 0.5rem', minWidth: 0, overflow: 'hidden' }
 const tileTitle     = { color: T.goldText, fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '5px' }
-const radioRow      = (a) => ({ display: 'flex', gap: '6px', alignItems: 'center', padding: '2px 4px', borderRadius: '3px', cursor: 'pointer', background: a ? T.tealBg : 'transparent' })
+const radioRow      = (a) => ({ display: 'flex', gap: '6px', alignItems: 'center', padding: '2px 4px', borderRadius: '3px', cursor: 'pointer', background: a ? T.tealBg : 'transparent', overflow: 'hidden' })
 const selectStyle   = { background: T.surface2, border: `1px solid ${T.border}`, borderRadius: '6px', color: T.text, fontSize: '12px', padding: '5px 8px' }
 const btnStyle      = { padding: '0.55rem 1rem', background: T.teal, color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '13px', whiteSpace: 'nowrap' }
 const textareaStyle = { width: '100%', background: T.surface2, border: `1.5px solid ${T.teal}`, borderRadius: '8px', color: T.text, fontSize: '14px', padding: '0.65rem 0.85rem', resize: 'vertical', boxSizing: 'border-box', fontFamily: 'system-ui, sans-serif' }

@@ -89,13 +89,15 @@ export default function QuickGatherFAB({ onAdd }) {
           style={{
             position: 'fixed', inset: 0,
             background: 'rgba(26,42,26,0.65)', zIndex: 1000,
-            display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+            display: 'flex', alignItems: 'flex-end',
+            overflow: 'hidden',
           }}
         >
           <div
             onClick={e => e.stopPropagation()}
             style={{
               width: '100%', maxWidth: '520px',
+              margin: '0 auto',
               background: T.surface,
               borderRadius: '22px 22px 0 0',
               padding: '20px 16px',
@@ -104,6 +106,7 @@ export default function QuickGatherFAB({ onAdd }) {
               maxHeight: '90vh',
               overflowY: 'auto',
               boxSizing: 'border-box',
+              minWidth: 0,
             }}
           >
             {/* Drag handle */}

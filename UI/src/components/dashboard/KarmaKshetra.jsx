@@ -160,10 +160,10 @@ export default function KarmaKshetra() {
       }}>
         {/* Logo + title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <img src="/logo.png" alt="Chakra" style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${T.gold}` }} />
+          <img src="/logo.png" alt="Chakra" className="hdr-logo" style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: `2.5px solid ${T.gold}` }} />
           <div>
-            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: T.forest, margin: 0, fontSize: '1.15rem', lineHeight: 1, fontWeight: 700, letterSpacing: '3px' }}>CHAKRA</h1>
-            <p style={{ color: T.goldText, fontSize: '8px', margin: '1px 0 0', letterSpacing: '1px', fontWeight: 600, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+            <h1 className="hdr-title" style={{ fontFamily: "'Cormorant Garamond', serif", color: T.forest, margin: 0, fontSize: '1.15rem', lineHeight: 1, fontWeight: 700, letterSpacing: '3px' }}>CHAKRA</h1>
+            <p className="hdr-sub" style={{ color: T.goldText, fontSize: '8px', margin: '1px 0 0', letterSpacing: '1px', fontWeight: 600, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
               {tasks.length} tasks
             </p>
           </div>
@@ -179,12 +179,13 @@ export default function KarmaKshetra() {
         {/* Spacer */}
         <div style={{ flex: 1 }} />
 
-        {/* Action buttons — scrollable row on mobile */}
-        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', overflowX: 'auto', flexShrink: 1, minWidth: 0, paddingBottom: '2px' }}>
+        {/* Action buttons */}
+        <div className="hdr-btns" style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
           <button
             onClick={() => setShowCalendar(true)}
             title="Kriya™ — Google Calendar"
-            style={{ ...hBtn, background: T.surface2, border: `1px solid ${T.border}`, color: T.text2, flexShrink: 0 }}
+            className="hdr-btn"
+            style={{ ...hBtn, background: T.surface2, border: `1px solid ${T.border}`, color: T.text2 }}
           >
             📅
           </button>
@@ -192,8 +193,9 @@ export default function KarmaKshetra() {
           <button
             onClick={toggleKrishna}
             title="Krishna Mode"
+            className="hdr-btn"
             style={{
-              ...hBtn, flexShrink: 0,
+              ...hBtn,
               background: krishnaOn ? T.goldBg : T.surface2,
               border: `1px solid ${krishnaOn ? T.gold : T.border}`,
               color: krishnaOn ? T.goldText : T.text2,
@@ -202,11 +204,11 @@ export default function KarmaKshetra() {
             🙏
           </button>
 
-          <button onClick={handleExportOpen} title="Export" style={{ ...hBtn, background: T.teal, border: `1px solid ${T.teal}`, color: '#fff', flexShrink: 0 }}>↗</button>
+          <button onClick={handleExportOpen} title="Export" className="hdr-btn" style={{ ...hBtn, background: T.teal, border: `1px solid ${T.teal}`, color: '#fff' }}>↗</button>
           {done > 0 && (
-            <button onClick={handleClearCompleted} title="Clear Completed" style={{ ...hBtn, background: T.surface, border: `1px solid ${T.red}`, color: T.red, flexShrink: 0 }}>✕</button>
+            <button onClick={handleClearCompleted} title="Clear Completed" className="hdr-btn" style={{ ...hBtn, background: T.surface, border: `1px solid ${T.red}`, color: T.red }}>✕</button>
           )}
-          <button onClick={logout} title="Logout" style={{ ...hBtn, background: T.surface, border: `1px solid ${T.border}`, color: T.text2, flexShrink: 0 }}>
+          <button onClick={logout} title="Logout" className="hdr-btn" style={{ ...hBtn, background: T.surface, border: `1px solid ${T.border}`, color: T.text2 }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5z"/>
               <path d="M4 5h8V3H4C2.9 3 2 3.9 2 5v14c0 1.1.9 2 2 2h8v-2H4V5z"/>

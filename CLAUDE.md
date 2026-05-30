@@ -9,78 +9,102 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Product:** Chakra™ — Dashboard: Karma Kshetra™  
 **Owner:** DK (Dheeraj Kohli), House of DK / Aux Services LLC, Austin, Texas  
 **Philosophy:** Bhagavad Gita — 18 chapters mapped to 18 life arenas  
-**Current status:** HTML prototypes (V30+) being converted to a full-stack web app
-
-This directory contains session handoff files and build documentation. The live codebase is deployed separately via GitHub → Render.
+**Current status:** Full-stack web app — FastAPI backend + React/Vite frontend, deployed on Render
 
 ---
 
-## Planned Stack
+## Actual Stack (implemented)
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Vanilla JS + HTML5 (extracted from HTML prototypes) |
-| Backend | Node.js + Express |
-| Database | PostgreSQL |
-| File storage | Cloudflare R2 |
-| AI agents | LangChain.js + TypeScript |
-| AI gateway | LiteLLM (proxies Anthropic / OpenAI / Gemini) |
-| Hosting | Render (auto-deploy from GitHub `aux-dk` org) |
+| Frontend | React 18 + Vite (no TypeScript) |
+| Backend | FastAPI (Python) + SQLAlchemy + Alembic |
+| Database | PostgreSQL (`JSONB` for `state_history`) |
+| AI gateway | OpenRouter (proxies Gemini, others) |
+| Hosting | Render — `chakra-app-ui.onrender.com` (UI), separate backend service |
 | DNS | GoDaddy → Render |
 
-### Planned Directory Layout
+### Repository Layout
 
 ```
-/chakra-app
-├── /public
-│   ├── index.html          # login page
-│   └── dashboard.html      # Karma Kshetra™ dashboard
-├── /js
-│   ├── app.js              # frontend logic
-│   └── data.js             # GITA_CHAPTERS array and static data
-├── /css
-│   └── styles.css
-├── /server
-│   ├── index.js            # Express entry point
-│   ├── auth.js             # bcrypt + express-session
-│   ├── db.js               # PostgreSQL connection pool
-│   └── /routes
-│       ├── tasks.js        # Task CRUD API
-│       └── claude.js       # LLM proxy (keeps API keys server-side)
-├── .env                    # never committed
-├── .gitignore
-└── package.json
+/Chakra Project
+├── Server/                 # FastAPI backend
+│   ├── app/
+│   │   ├── main.py         # FastAPI app, CORS, router registration
+│   │   ├── config.py       # pydantic-settings (reads .env)
+│   │   ├── database.py     # SQLAlchemy engine + get_db dependency
+│   │   ├── dependencies.py # JWT bearer → current user_id
+│   │   ├── models/         # SQLAlchemy ORM: user.py, task.py
+│   │   ├── schemas/        # Pydantic request/response: user.py, task.py
+│   │   ├── services/       # auth.py (bcrypt + JWT), openrouter.py
+│   │   └── routers/        # auth.py, tasks.py, llm.py
+│   ├── requirements.txt
+│   └── runtime.txt
+└── UI/                     # React/Vite frontend
+    ├── src/
+    │   ├── App.jsx          # BrowserRouter + AuthProvider + ProtectedRoute
+    │   ├── main.jsx
+    │   ├── data/gitaChapters.js   # GITA_CHAPTERS array (18 entries)
+    │   ├── services/api.js        # axios instance; authAPI, tasksAPI, llmAPI
+    │   ├── hooks/useAuth.jsx      # AuthContext, token in localStorage
+    │   ├── hooks/useTasks.js      # task state + CRUD wrappers
+    │   ├── utils/
+    │   │   ├── horizonLogic.js    # autoHorizon, timeScore, isOverdue, deadlineFromTimeFrame
+    │   │   ├── colorSystem.js     # score → color band
+    │   │   ├── scoring.js
+    │   │   └── theme.js
+    │   └── components/
+    │       ├── auth/LoginPage.jsx
+    │       ├── dashboard/KarmaKshetra.jsx   # top-level dashboard shell
+    │       ├── dashboard/TabNav.jsx
+    │       ├── dashboard/TaskCard.jsx
+    │       ├── fab/QuickGatherFAB.jsx
+    │       ├── calendar/CalendarModal.jsx
+    │       ├── common/ColorBadge.jsx
+    │       ├── common/OverdueStar.jsx
+    │       ├── smartfetch/SmartFetch.jsx     # image → tasks via vision LLM
+    │       └── tabs/                         # one file per dashboard tab
+    ├── .env.example         # VITE_API_BASE_URL=http://localhost:8000
+    ├── package.json
+    └── vite.config.js       # dev proxy: /api + /auth → localhost:8000
 ```
 
-### Database Schema
+### Development Commands
 
-```sql
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR(80) UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL,
-  role VARCHAR(20) DEFAULT 'tester',
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE tasks (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES users(id),
-  title TEXT NOT NULL,
-  bucket VARCHAR(30),
-  weightage VARCHAR(5),
-  time_horizon VARCHAR(30),
-  completed BOOLEAN DEFAULT false,
-  entry_timestamp TIMESTAMP DEFAULT NOW()
-);
+**Backend** (from `Server/` directory):
+```bash
+pip install -r requirements.txt
+uvicorn app.main:app --reload        # starts on :8000
 ```
 
-### Development Commands (once scaffolded)
+**Backend `.env`** (required — not committed):
+```
+DATABASE_URL=postgresql://...
+SECRET_KEY=...
+OPENROUTER_API_KEY=...
+ALLOWED_ORIGINS=http://localhost:5173
+```
 
+**Frontend** (from `UI/` directory):
 ```bash
 npm install
-node server/index.js        # start server
+npm run dev        # starts on :5173 with proxy to :8000
+npm run build
 ```
+
+In dev mode, Vite proxies `/api/*` and `/auth/*` to `http://localhost:8000`, so no CORS issues locally.
+
+### Database Schema (actual — more fields than original spec)
+
+```sql
+-- users: id, username, password_hash, role, created_at
+-- tasks: id, user_id, title, bucket, weightage, time_horizon,
+--        life_area, ch (int, Gita chapter), multitask (bool),
+--        state_history (JSONB), origin_bucket, completed,
+--        completed_timestamp, entry_timestamp
+```
+
+`state_history` is a JSONB array of `{bucket, timestamp}` snapshots appended on every bucket change.
 
 ---
 
@@ -158,8 +182,8 @@ Score maps to color bands above. `isOverdue()` = `timeScore() ≤ 0`.
 
 1. DK + Claude iterate on HTML prototypes (versioned, stored in Google Drive via `aux-drive`).
 2. Mayur extracts and applies changes to the live Render deployment.
-3. Claude scaffolds ~80% of project structure from HTML prototypes; Mayur handles ~20% (DB schema, env setup, testing).
-4. All subsequent UI changes: DK creates new HTML → Mayur applies incremental updates.
+3. All subsequent UI changes: DK creates new HTML → Mayur applies incremental updates to the React components.
+4. Backend changes go through Alembic migrations — run `alembic revision --autogenerate -m "desc"` then `alembic upgrade head` before deploying.
 
 ---
 
