@@ -3,12 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { T } from '../../utils/theme'
 
-const DEV_USERS = [
-  { username: 'dk',      password: 'dk@chakra',      role: 'admin' },
-  { username: 'tester1', password: 'tester1@chakra', role: 'tester' },
-  { username: 'tester2', password: 'tester2@chakra', role: 'tester' },
-  { username: 'tester3', password: 'tester3@chakra', role: 'tester' },
-]
 
 export default function LoginPage() {
   const { login }  = useAuth()
@@ -105,20 +99,6 @@ export default function LoginPage() {
 
         <p style={styles.footer}>a SUTRA system by DK · House of DK · Aux Services LLC</p>
 
-        <div style={styles.devPanel}>
-          <p style={styles.devTitle}>Dev credentials</p>
-          {DEV_USERS.map(u => (
-            <button
-              key={u.username}
-              onClick={() => { setUsername(u.username); setPassword(u.password) }}
-              style={styles.devRow}
-            >
-              <span style={styles.devUser}>{u.username}</span>
-              <span style={styles.devPass}>{u.password}</span>
-              {u.role === 'admin' && <span style={styles.devBadge}>admin</span>}
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   )
@@ -199,10 +179,4 @@ const styles = {
     fontFamily: "'Montserrat', system-ui, sans-serif",
   },
   footer:   { color: T.textMuted, fontSize: '10px', letterSpacing: '0.06em', textAlign: 'center', marginBottom: '1.5rem' },
-  devPanel: { width: '100%', background: T.surface, border: `1px dashed ${T.border}`, borderRadius: '8px', padding: '0.75rem 1rem' },
-  devTitle: { color: T.textMuted, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem 0' },
-  devRow:   { display: 'flex', width: '100%', alignItems: 'center', gap: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', padding: '3px 0', textAlign: 'left' },
-  devUser:  { color: T.goldText, fontSize: '12px', minWidth: '64px', fontWeight: 600 },
-  devPass:  { color: T.textMuted, fontSize: '12px', flex: 1 },
-  devBadge: { fontSize: '10px', color: T.teal, border: `1px solid ${T.teal}`, borderRadius: '3px', padding: '0 4px' },
 }
