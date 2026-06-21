@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { T } from '../../utils/theme'
 import { MicButton } from '../tabs/GatherTab'
+import ScheduleConfirmModal from '../calendar/ScheduleConfirmModal'
 
 export default function QuickGatherFAB({ onAdd }) {
   const [open, setOpen]       = useState(false)
@@ -10,16 +11,25 @@ export default function QuickGatherFAB({ onAdd }) {
   const [voiceError, setVoiceError] = useState(null)
   const recognitionRef = useRef(null)
 
+  const [taskAdded, setTaskAdded]               = useState(false)
+  const [showCalendarPrompt, setShowCalendarPrompt] = useState(false)
+  const [lastAddedTask, setLastAddedTask]       = useState(null)
+
   async function handleSave() {
     const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
     if (!lines.length) return
     setSaving(true)
+    const firstTask = { title: lines[0], bucket: 'Karya' }
     for (const line of lines) {
       await onAdd({ title: line, bucket: 'Karya' })
     }
     setText('')
     setSaving(false)
     setOpen(false)
+    setLastAddedTask(firstTask)
+    setTaskAdded(true)
+    setTimeout(() => setShowCalendarPrompt(true), 1500)
+    setTimeout(() => setTaskAdded(false), 3000)
   }
 
   function handleClose() {
@@ -196,6 +206,29 @@ export default function QuickGatherFAB({ onAdd }) {
             </div>
           </div>
         </div>
+      )}
+      {/* Task Added success popup */}
+      {taskAdded && (
+        <div style={{
+          position: 'fixed', bottom: '170px', left: 0, right: 0, margin: '0 auto',
+          width: 'fit-content', zIndex: 1100,
+          background: T.teal, color: '#fff',
+          padding: '10px 24px', borderRadius: '24px',
+          fontSize: '13px', fontWeight: 700,
+          boxShadow: '0 4px 20px rgba(26,107,90,0.4)',
+          animation: 'fadeSlideIn 0.2s ease',
+          display: 'flex', alignItems: 'center', gap: '8px',
+        }}>
+          <span style={{ fontSize: '16px' }}>✓</span> Task Added
+        </div>
+      )}
+
+      {showCalendarPrompt && lastAddedTask && (
+        <ScheduleConfirmModal
+          task={lastAddedTask}
+          onDone={() => setShowCalendarPrompt(false)}
+          onCancel={() => setShowCalendarPrompt(false)}
+        />
       )}
     </>
   )
