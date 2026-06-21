@@ -551,7 +551,7 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
       {/* Task Added success popup */}
       {taskAdded && (
         <div style={{
-          position: 'fixed', bottom: '100px', left: 0, right: 0, margin: '0 auto',
+          position: 'fixed', bottom: '170px', left: 0, right: 0, margin: '0 auto',
           width: 'fit-content', zIndex: 1100,
           background: T.teal, color: '#fff',
           padding: '10px 24px', borderRadius: '24px',
