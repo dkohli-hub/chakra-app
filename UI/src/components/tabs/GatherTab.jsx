@@ -113,7 +113,7 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
     setAdding(false)
     setTaskAdded(true)
     setLastAddedTask(firstTask)
-    setShowCalendarPrompt(true)
+    setTimeout(() => setShowCalendarPrompt(true), 1500)
     setTimeout(() => setTaskAdded(false), 3000)
   }
 
