@@ -412,12 +412,6 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
           </button>
         </div>
 
-        {/* Task Added banner */}
-        {taskAdded && (
-          <div style={{ marginTop: '8px', padding: '8px 12px', borderRadius: '8px', background: '#1A6B5A15', border: `1px solid ${T.teal}40`, color: T.teal, fontSize: '12px', fontWeight: 600, textAlign: 'center' }}>
-            ✓ Task Added
-          </div>
-        )}
       </form>
 
       {/* ── Research AI Chatbot ───────────────────────────── */}
@@ -552,6 +546,22 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
         tasks.filter(t => !t.completed).slice(0, 20).map(t => (
           <TaskCard key={t.id} task={t} onUpdate={updateTask} onDelete={deleteTask} />
         ))
+      )}
+
+      {/* Task Added success popup */}
+      {taskAdded && (
+        <div style={{
+          position: 'fixed', bottom: '100px', left: 0, right: 0, margin: '0 auto',
+          width: 'fit-content', zIndex: 1100,
+          background: T.teal, color: '#fff',
+          padding: '10px 24px', borderRadius: '24px',
+          fontSize: '13px', fontWeight: 700,
+          boxShadow: '0 4px 20px rgba(26,107,90,0.4)',
+          animation: 'fadeSlideIn 0.2s ease',
+          display: 'flex', alignItems: 'center', gap: '8px',
+        }}>
+          <span style={{ fontSize: '16px' }}>✓</span> Task Added
+        </div>
       )}
 
       {showCalendarPrompt && lastAddedTask && (
