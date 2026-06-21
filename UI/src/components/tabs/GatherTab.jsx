@@ -4,11 +4,12 @@ import { GITA_CHAPTERS } from '../../data/gitaChapters'
 import { llmAPI } from '../../services/api'
 import TaskCard from '../dashboard/TaskCard'
 import { T } from '../../utils/theme'
+import ScheduleConfirmModal from '../calendar/ScheduleConfirmModal'
 
 const BUCKETS    = ['Karya', 'Dhairya', 'Vishram', 'Manan', 'Tyaga', 'Prarabdha']
 const WEIGHTAGES = ['W1', 'W2', 'W3', 'W4', 'W5']
 const W_LABELS   = { W1: '5–10 min', W2: '20–30 min', W3: '1 hour', W4: 'Half day', W5: 'Full day' }
-const LIFE_AREAS = ['Personal/Family', 'Work/Employment', 'Picturizze', 'Other']
+const LIFE_AREAS = ['Picturizze', 'House of DK', 'DK Academy', 'Family & Personal', 'Health & Self', 'Connection', 'Other']
 const COLOR_LEGEND = [
   { color: T.blue,        note: '> 400% Blue' },
   { color: T.green,       note: '200–400% Green' },
@@ -46,6 +47,13 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
   const [bucket, setBucket]       = useState('Karya')
   const [adding, setAdding]       = useState(false)
 
+  // Google Calendar scheduling state
+  const [scheduleDate, setScheduleDate]     = useState('')
+  const [scheduleTime, setScheduleTime]     = useState('')
+  const [showScheduleModal, setShowScheduleModal] = useState(false)
+  const [pendingTask, setPendingTask]       = useState(null)
+  const [pendingLines, setPendingLines]     = useState([])
+
   // Image upload state
   const [imgBase64, setImgBase64]     = useState(null)
   const [imgPreview, setImgPreview]   = useState(null)
@@ -80,24 +88,56 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
     if (hints.multitask && !multitask) setMultitask(true)
   }
 
+  function buildTaskData(titleLine) {
+    return {
+      title: titleLine,
+      bucket,
+      weightage: weightage || null,
+      time_horizon: timeFrame || null,
+      life_area: lifeArea || null,
+      ch: ch ? parseInt(ch) : null,
+      multitask,
+    }
+  }
+
+  function resetForm() {
+    setTitle(''); setWeightage(''); setTimeFrame(''); setLifeArea('')
+    setCh(''); setMultitask(false); setScheduleDate(''); setScheduleTime('')
+  }
+
   async function handleAdd(e) {
     e.preventDefault()
     if (!title.trim()) return
-    setAdding(true)
     const lines = title.split('\n').map(l => l.trim()).filter(Boolean)
-    for (const line of lines) {
-      await addTask({
-        title: line,
-        bucket,
-        weightage: weightage || null,
-        time_horizon: timeFrame || null,
-        life_area: lifeArea || null,
-        ch: ch ? parseInt(ch) : null,
-        multitask,
-      })
+
+    if (scheduleDate && scheduleTime) {
+      // Show confirmation modal for first line; remaining lines added without calendar
+      setPendingTask(buildTaskData(lines[0]))
+      setPendingLines(lines.slice(1))
+      setShowScheduleModal(true)
+      return
     }
-    setTitle(''); setWeightage(''); setTimeFrame(''); setLifeArea(''); setCh(''); setMultitask(false)
+
+    // No date/time — add to Chakra only
+    setAdding(true)
+    for (const line of lines) await addTask(buildTaskData(line))
+    resetForm()
     setAdding(false)
+  }
+
+  async function handleScheduleConfirm() {
+    setShowScheduleModal(false)
+    setAdding(true)
+    await addTask(pendingTask)
+    for (const line of pendingLines) await addTask(buildTaskData(line))
+    setPendingTask(null); setPendingLines([])
+    resetForm()
+    setAdding(false)
+  }
+
+  function handleScheduleCancel() {
+    setShowScheduleModal(false)
+    setPendingTask(null); setPendingLines([])
   }
 
   // ── Image handling ───────────────────────────────────────
@@ -390,8 +430,44 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
             <option value="">Gita Chapter (optional)</option>
             {GITA_CHAPTERS.map(c => <option key={c.number} value={c.number}>Ch {c.number} — {c.title}</option>)}
           </select>
+        </div>
+
+        {/* ── Schedule to Google Calendar ── */}
+        <div style={{ marginTop: '0.75rem', background: T.tealBg, border: `1.5px solid ${T.teal}35`, borderRadius: '9px', padding: '10px 12px' }}>
+          <div style={{ color: T.teal, fontSize: '9px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '8px' }}>
+            📅 Schedule to Google Calendar <span style={{ color: T.textMuted, fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <div>
+              <label style={{ color: T.textMuted, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '4px' }}>Date</label>
+              <input
+                type="date"
+                value={scheduleDate}
+                onChange={e => setScheduleDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                style={{ ...selectStyle, width: '100%', padding: '6px 8px' }}
+              />
+            </div>
+            <div>
+              <label style={{ color: T.textMuted, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '4px' }}>Time</label>
+              <input
+                type="time"
+                value={scheduleTime}
+                onChange={e => setScheduleTime(e.target.value)}
+                style={{ ...selectStyle, width: '100%', padding: '6px 8px' }}
+              />
+            </div>
+          </div>
+          {scheduleDate && scheduleTime && (
+            <div style={{ marginTop: '6px', color: T.teal, fontSize: '10px', fontStyle: 'italic' }}>
+              ✦ Rulebook validation will run when you click Add to Chakra™
+            </div>
+          )}
+        </div>
+
+        <div style={{ marginTop: '0.75rem' }}>
           <button type="submit" disabled={adding} style={{ ...btnStyle, width: '100%' }}>
-            {adding ? '...' : '+ Add to Chakra™'}
+            {adding ? '⟳ Saving…' : scheduleDate && scheduleTime ? '+ Add to Chakra™ & Schedule →' : '+ Add to Chakra™'}
           </button>
         </div>
       </form>
@@ -528,6 +604,15 @@ export default function GatherTab({ tasks, loading, addTask, updateTask, deleteT
         tasks.filter(t => !t.completed).slice(0, 20).map(t => (
           <TaskCard key={t.id} task={t} onUpdate={updateTask} onDelete={deleteTask} />
         ))
+      )}
+
+      {showScheduleModal && pendingTask && (
+        <ScheduleConfirmModal
+          task={pendingTask}
+          dateTimeISO={`${scheduleDate}T${scheduleTime}:00`}
+          onConfirm={handleScheduleConfirm}
+          onCancel={handleScheduleCancel}
+        />
       )}
     </div>
   )

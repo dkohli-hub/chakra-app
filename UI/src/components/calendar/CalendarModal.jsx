@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { T } from '../../utils/theme'
+import { ACCOUNTS, getToken, clearToken } from '../../services/googleCalendar'
 
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
-const SCOPES    = 'https://www.googleapis.com/auth/calendar.readonly'
+const SCOPES    = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly'
 
 function loadGsiScript() {
   return new Promise((resolve, reject) => {
@@ -149,6 +150,43 @@ export default function CalendarModal({ onClose }) {
             </div>
           )}
 
+          {/* Connected accounts status — always visible when key present */}
+          {status !== 'no-key' && (
+            <div style={{ background: T.surface2, border: `1px solid ${T.border}`, borderRadius: '10px', padding: '10px 12px', marginBottom: '14px' }}>
+              <div style={{ color: T.goldText, fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Calendar Connections</div>
+              {Object.values(ACCOUNTS).map(acc => {
+                const connected = !!getToken(acc.key)
+                return (
+                  <div key={acc.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '5px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '14px' }}>{acc.icon}</span>
+                      <div>
+                        <div style={{ color: T.text, fontSize: '11px', fontWeight: 600 }}>{acc.label}</div>
+                        <div style={{ color: T.textMuted, fontSize: '9px' }}>{acc.email}</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ fontSize: '9px', fontWeight: 700, color: connected ? T.teal : T.textMuted, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        {connected ? '● Active' : '○ Not connected'}
+                      </span>
+                      {connected && (
+                        <button
+                          onClick={() => { clearToken(acc.key); setStatus(s => s) }}
+                          style={{ background: 'none', border: `1px solid ${T.border}`, borderRadius: '4px', color: T.textMuted, fontSize: '9px', padding: '2px 6px', cursor: 'pointer' }}
+                        >
+                          Disconnect
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+              <div style={{ color: T.textMuted, fontSize: '9px', marginTop: '6px', fontStyle: 'italic' }}>
+                Connections are established when you first schedule a task to each calendar.
+              </div>
+            </div>
+          )}
+
           {status === 'authed' && (
             <>
               <div style={{ color: T.goldText, fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
@@ -170,7 +208,7 @@ export default function CalendarModal({ onClose }) {
                 ))
               )}
               <button onClick={() => { setStatus('idle'); setEvents([]) }} style={{ background: 'none', border: 'none', color: T.textMuted, fontSize: '10px', cursor: 'pointer', marginTop: '8px', padding: 0 }}>
-                Disconnect
+                Disconnect from event view
               </button>
             </>
           )}
