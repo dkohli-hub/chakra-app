@@ -87,7 +87,11 @@ function loadGsi() {
 
 // ── Token store ───────────────────────────────────────────────────────────────
 function saveToken(accountKey, resp) {
-  const d = { access_token: resp.access_token, expires_at: Date.now() + (resp.expires_in || 3600) * 1000 }
+  const d = {
+    access_token: resp.access_token,
+    expires_at: Date.now() + (resp.expires_in || 3600) * 1000,
+    scope: resp.scope || SCOPES,
+  }
   localStorage.setItem(`chakra_goog_${accountKey}`, JSON.stringify(d))
   return d.access_token
 }
@@ -97,6 +101,8 @@ export function getToken(accountKey) {
   if (!raw) return null
   const d = JSON.parse(raw)
   if (Date.now() >= d.expires_at - 60000) { localStorage.removeItem(`chakra_goog_${accountKey}`); return null }
+  // Discard token if it lacks write scope — forces fresh auth with correct scopes
+  if (!d.scope || !d.scope.includes('calendar.events')) { localStorage.removeItem(`chakra_goog_${accountKey}`); return null }
   return d.access_token
 }
 
