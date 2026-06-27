@@ -104,12 +104,18 @@ export default function ScheduleConfirmModal({ task, onDone, onCancel }) {
   return (
     <div style={{
       position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 1200,
-      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
+      display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+      WebkitOverflowScrolling: 'touch',
     }}>
       <div style={{
-        background: T.surface, borderRadius: '16px', width: '100%', maxWidth: '380px',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.3)', border: `1px solid ${T.border}`,
-        overflow: 'hidden', animation: 'fadeSlideIn 0.2s ease',
+        background: T.surface,
+        borderRadius: '16px 16px 0 0',
+        width: '100%', maxWidth: '480px',
+        maxHeight: '92vh',
+        display: 'flex', flexDirection: 'column',
+        boxShadow: '0 -8px 40px rgba(0,0,0,0.25)', border: `1px solid ${T.border}`,
+        animation: 'fadeSlideIn 0.2s ease',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}>
 
         {/* Header */}
@@ -120,7 +126,7 @@ export default function ScheduleConfirmModal({ task, onDone, onCancel }) {
           )}
         </div>
 
-        <div style={{ padding: '1.25rem' }}>
+        <div style={{ padding: '1.25rem', overflowY: 'auto', flex: 1 }}>
 
           {/* Task chip */}
           <div style={{ background: T.surface2, borderRadius: '8px', padding: '7px 12px', marginBottom: '14px', border: `1px solid ${T.border}` }}>
