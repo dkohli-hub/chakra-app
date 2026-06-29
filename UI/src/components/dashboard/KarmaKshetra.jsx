@@ -128,7 +128,7 @@ export default function KarmaKshetra() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: T.pageBg, color: T.text, fontFamily: "'Montserrat', system-ui, sans-serif", paddingBottom: '90px' }}>
+    <div style={{ minHeight: '100vh', background: T.pageBg, color: T.text, fontFamily: "'Montserrat', system-ui, sans-serif", paddingBottom: '90px', overflowX: 'hidden' }}>
 
       {/* Krishna verse toast */}
       {showVerse && (
