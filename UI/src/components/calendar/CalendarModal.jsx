@@ -81,7 +81,7 @@ export default function CalendarModal({ onClose }) {
     }} onClick={e => e.target === e.currentTarget && onClose()}>
       <div style={{
         background: T.surface, borderRadius: '16px', width: '100%', maxWidth: '480px',
-        maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+        maxHeight: '80dvh', overflow: 'hidden', display: 'flex', flexDirection: 'column',
         boxShadow: '0 20px 60px rgba(0,0,0,0.25)', border: `1px solid ${T.border}`,
       }}>
         {/* Header */}
@@ -108,12 +108,12 @@ export default function CalendarModal({ onClose }) {
                 <li>Enable <strong>Google Calendar API</strong></li>
                 <li>Go to <strong>Credentials → Create OAuth 2.0 Client ID</strong> (Web application)</li>
                 <li>Add authorized JS origins:<br />
-                  <code style={{ background: T.surface2, padding: '1px 6px', borderRadius: '4px', fontSize: '11px' }}>http://localhost:5173</code><br />
-                  <code style={{ background: T.surface2, padding: '1px 6px', borderRadius: '4px', fontSize: '11px' }}>https://your-render-app.onrender.com</code>
+                  <code style={{ background: T.surface2, padding: '1px 6px', borderRadius: '4px', fontSize: '11px', overflowWrap: 'anywhere', wordBreak: 'break-all' }}>http://localhost:5173</code><br />
+                  <code style={{ background: T.surface2, padding: '1px 6px', borderRadius: '4px', fontSize: '11px', overflowWrap: 'anywhere', wordBreak: 'break-all' }}>https://your-render-app.onrender.com</code>
                 </li>
                 <li>Copy the <strong>Client ID</strong></li>
                 <li>Add to <code style={{ background: T.surface2, padding: '1px 6px', borderRadius: '4px', fontSize: '11px' }}>UI/.env</code>:<br />
-                  <code style={{ background: T.surface2, padding: '1px 6px', borderRadius: '4px', fontSize: '11px' }}>VITE_GOOGLE_CLIENT_ID=your-client-id</code>
+                  <code style={{ background: T.surface2, padding: '1px 6px', borderRadius: '4px', fontSize: '11px', overflowWrap: 'anywhere', wordBreak: 'break-all' }}>VITE_GOOGLE_CLIENT_ID=your-client-id</code>
                 </li>
                 <li>Restart dev server / redeploy</li>
               </ol>

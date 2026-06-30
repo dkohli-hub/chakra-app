@@ -106,12 +106,12 @@ export default function LoginPage() {
 
 const styles = {
   page: {
-    minHeight: '100vh',
+    minHeight: '100dvh',
     background: T.pageBg,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '1rem',
+    padding: 'max(1rem, env(safe-area-inset-top, 1rem)) 1rem max(1rem, env(safe-area-inset-bottom, 1rem))',
   },
   container: {
     width: '100%',
@@ -121,7 +121,7 @@ const styles = {
     alignItems: 'center',
   },
   logoWrap:   { marginBottom: '0.5rem' },
-  logo:       { width: '200px', height: '200px', objectFit: 'contain', filter: `drop-shadow(0 0 24px ${T.gold}55)` },
+  logo:       { width: '160px', height: '160px', maxWidth: '50vw', maxHeight: '50vw', objectFit: 'contain', filter: `drop-shadow(0 0 24px ${T.gold}55)` },
   tagline:    { textAlign: 'center', marginBottom: '1.25rem' },
   tagSub:     { color: T.goldText, fontSize: '12px', letterSpacing: '0.08em', margin: 0, fontStyle: 'italic' },
   divider:    { display: 'flex', alignItems: 'center', gap: '0.75rem', width: '100%', marginBottom: '1.5rem' },

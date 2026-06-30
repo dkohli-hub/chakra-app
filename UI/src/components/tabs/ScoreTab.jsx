@@ -29,7 +29,7 @@ export default function ScoreTab({ tasks, loading }) {
       </div>
 
       {/* Three stat boxes */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem', marginBottom: '0.75rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: '0.5rem', marginBottom: '0.75rem' }}>
         <StatBox label="Total"   value={total}   color={T.goldText} />
         <StatBox label="Done"    value={done}    color={T.green} />
         <StatBox label="Overdue" value={overdue} color={overdue > 0 ? T.red : T.textMuted} />

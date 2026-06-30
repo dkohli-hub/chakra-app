@@ -75,7 +75,7 @@ export default function SmartFetch({ tasks, updateTask, deleteTask }) {
         onClick={() => { setOpen(o => !o); setResults(null); setQuery('') }}
         title="Smart Fetch — AI Task Search"
         style={{
-          position: 'fixed', bottom: '88px', right: '1.5rem', zIndex: 1000,
+          position: 'fixed', bottom: 'calc(88px + env(safe-area-inset-bottom, 0px))', right: '1.5rem', zIndex: 1050,
           width: '48px', height: '48px', borderRadius: '50%',
           background: open ? '#1A6B5A' : '#0D1117',
           border: '2px solid #C9A84C',
@@ -91,7 +91,7 @@ export default function SmartFetch({ tasks, updateTask, deleteTask }) {
       {/* Slide-up panel */}
       {open && (
         <div style={{
-          position: 'fixed', bottom: '9rem', right: '1rem', zIndex: 999,
+          position: 'fixed', bottom: 'calc(9rem + env(safe-area-inset-bottom, 0px))', right: '1rem', zIndex: 1049,
           width: 'min(420px, calc(100vw - 2rem))',
           background: '#161B22',
           border: '1px solid #C9A84C40',
@@ -99,7 +99,7 @@ export default function SmartFetch({ tasks, updateTask, deleteTask }) {
           boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
           animation: 'fadeSlideIn 0.22s ease',
           display: 'flex', flexDirection: 'column',
-          maxHeight: 'calc(100vh - 8rem)',
+          maxHeight: 'calc(100dvh - 8rem)',
         }}>
           {/* Header */}
           <div style={{ padding: '0.9rem 1rem 0.6rem', borderBottom: '1px solid #21262D' }}>

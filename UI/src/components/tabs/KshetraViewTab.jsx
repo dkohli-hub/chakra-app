@@ -45,7 +45,7 @@ export default function KshetraViewTab({ tasks, loading, updateTask }) {
   return (
     <div>
       {/* Score tiles */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.25rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '0.75rem', marginBottom: '1.25rem' }}>
         <ScoreTile title="Raw Load Score" score={rawScore} note="Before Chakra™ processing" />
         <ScoreTile title="Post-Chakra Score" score={postChakra} note={diff > 0 ? `Chakra's work: ↓${diff} pts` : 'No change yet'} />
         <ScoreTile title="Your Adjusted Score" score={adjScore} note="Changes as you act below" highlight />

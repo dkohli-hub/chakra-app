@@ -128,14 +128,14 @@ export default function KarmaKshetra() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: T.pageBg, color: T.text, fontFamily: "'Montserrat', system-ui, sans-serif", paddingBottom: '90px', overflowX: 'hidden' }}>
+    <div style={{ minHeight: '100dvh', background: T.pageBg, color: T.text, fontFamily: "'Montserrat', system-ui, sans-serif", paddingBottom: 'calc(90px + env(safe-area-inset-bottom, 0px))', overflowX: 'hidden' }}>
 
       {/* Krishna verse toast */}
       {showVerse && (
         <div
           className="krishna-verse"
           style={{
-            position: 'fixed', top: '72px', left: '50%', transform: 'translateX(-50%)',
+            position: 'fixed', top: 'calc(72px + env(safe-area-inset-top, 0px))', left: '50%', transform: 'translateX(-50%)',
             background: T.goldBg, border: `1px solid ${T.gold}`,
             color: T.forest, padding: '12px 18px', borderRadius: '12px',
             fontFamily: "'Cormorant Garamond', serif", fontSize: '13px', fontStyle: 'italic',
@@ -150,7 +150,7 @@ export default function KarmaKshetra() {
 
       {/* Header */}
       <header style={{
-        padding: '0.6rem 1rem',
+        padding: 'calc(0.6rem + env(safe-area-inset-top, 0px)) 1rem 0.6rem',
         borderBottom: `1px solid ${T.border}`,
         display: 'flex', alignItems: 'center', gap: '0.5rem',
         background: T.surface,
@@ -306,4 +306,5 @@ const modalBox = {
   background: T.surface, border: `1px solid ${T.border}`, borderRadius: '14px',
   padding: '1.25rem', width: '100%', maxWidth: '440px',
   boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+  maxHeight: '85dvh', overflowY: 'auto',
 }

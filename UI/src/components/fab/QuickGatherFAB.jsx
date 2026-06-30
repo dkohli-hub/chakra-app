@@ -75,7 +75,7 @@ export default function QuickGatherFAB({ onAdd }) {
       <div
         onClick={() => setOpen(true)}
         style={{
-          position: 'fixed', bottom: '88px',
+          position: 'fixed', bottom: 'calc(88px + env(safe-area-inset-bottom, 0px))',
           left: 0, right: 0, margin: '0 auto',
           zIndex: 900, cursor: 'pointer',
           width: '62px', height: '62px',
@@ -114,7 +114,7 @@ export default function QuickGatherFAB({ onAdd }) {
               padding: '20px 16px',
               paddingBottom: 'calc(20px + env(safe-area-inset-bottom, 16px))',
               boxShadow: '0 -8px 40px rgba(0,0,0,0.18)',
-              maxHeight: '90vh',
+              maxHeight: '90dvh',
               overflowY: 'auto',
               boxSizing: 'border-box',
               minWidth: 0,
@@ -210,7 +210,7 @@ export default function QuickGatherFAB({ onAdd }) {
       {/* Task Added success popup */}
       {taskAdded && (
         <div style={{
-          position: 'fixed', bottom: '170px', left: 0, right: 0, margin: '0 auto',
+          position: 'fixed', bottom: 'calc(170px + env(safe-area-inset-bottom, 0px))', left: 0, right: 0, margin: '0 auto',
           width: 'fit-content', zIndex: 1100,
           background: T.teal, color: '#fff',
           padding: '10px 24px', borderRadius: '24px',
