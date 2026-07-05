@@ -151,7 +151,7 @@ const styles = {
     border: 'none',
     outline: 'none',
     color: T.text,
-    fontSize: '14px',
+    fontSize: '16px',
     padding: '0.7rem 0.75rem 0.7rem 0',
     fontFamily: "'Montserrat', system-ui, sans-serif",
   },
